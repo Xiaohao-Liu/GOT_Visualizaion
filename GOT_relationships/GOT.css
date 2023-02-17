@@ -1,0 +1,48 @@
+.title{
+	transition: cubic-bezier(0.91, 0.01, 0.74, 0.21) 1s;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background: white;
+    /* box-shadow: 0px 1px 3px -1px #020202; */
+    overflow: hidden;
+    z-index: 100;
+    opacity: 1;
+}
+.title-right{
+	position: absolute;
+    height: 100%;
+    width: 40%;
+    float: left;
+    background-image: url(Title2.jpeg);
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #020202;
+}
+.title-left{
+	position: absolute;
+    top: 0px;
+    left: 40%;
+    height: 100%;
+    width: 60%;
+    float: right;
+    background-image: url(Title.jpeg);
+    background-size: 380px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.loading{
+    height: 50px;
+    width: 100px;
+    background-image: url(loading.gif);
+    background-size: 100px;
+    background-position: center;
+    position: absolute;
+    z-index: 1;
+    bottom: 20px;
+    left: 0px;
+    background-repeat: no-repeat;
+}

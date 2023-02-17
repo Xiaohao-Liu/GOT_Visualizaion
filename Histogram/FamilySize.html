@@ -1,0 +1,274 @@
+<html>
+        <head>
+                <meta charset="utf-8">
+           
+                <title>RectGraph</title>
+                <script src="./js/d3.min.js"></script>
+                <style type="text/css">
+                    *{padding :0;margin:0;}
+                    #Rect
+                    {
+                        margin-left:calc((100% - 800px)/2);
+                    }
+                    .rect_text{
+                        fill:white;
+                    }
+                    .rect_text_2
+                    {
+                        fill:rgba(255,255,255,0.75);
+                    }
+                    .topInfo
+                    {
+                        background: #EEE;
+                        position: relative;
+                        height: 50px;
+                        width: 100px;
+                        top: 10px;
+                        left: 50px;
+                        border-radius: 5px;
+                        box-shadow: 0px 7px 20px -9px #000;
+                        overflow: hidden;
+                        transition: ease .5s;
+                    }
+                    .info
+                    {
+                        width:100%;
+                        height:25px;
+                        line-height:25px;
+                        text-align:center;
+                        color:black;
+                        text-overflow: clip;
+                        overflow: hidden;
+                        
+                    }
+                    .info1
+                    {
+                        background: #c0c0c0;
+                        border-top-right-radius: 4px;
+                        border-top-left-radius: 4px;
+                        font-size:12px;
+                    }
+                    .info2
+                    {
+                        font-size:18px;
+                    }
+                    .topInfo .bottom_arrow
+                    {
+                        
+                        height:0px;
+                        width:0px;
+                        display: block;
+                        border-right: 10px solid transparent;
+                        border-left:10px solid transparent;
+                        border-top:10px solid #EEE;
+                        margin:auto;
+                    }
+                    #houses{
+                        background-size:cover;
+                        background-position:center;
+                        background-repeat:no-repeat;
+                        background-color:black;
+                        background-image:url(../GOT_relationships/familys/Arryn.jpg);
+                        filter:blur(20px);
+                        z-index:-1;
+                    }
+                </style>
+            </head>
+        <body>
+            <div id="board" style="position:absolute;top:0px;left:0px;height: calc(100%);width:calc(100%);overflow: hidden;">
+                <!--tiao xin tu-->
+                <div id="houses" style="position:absolute;top:-10px;left:-10px;height: calc(100% + 20px);width:calc(100% + 20px);"></div>
+                <div class='topInfo' style="position:absolute;">
+                        <div class='info info1'>家族人数</div>
+                        <div class='info info2'>family size</div>
+                        <div class='bottom_arrow'></div>
+                        <div class="family_pic"></div>
+                    </div> 
+            </div>
+
+    <script type="text/javascript" src="./js/jquery.js"></script>
+<script type="text/javascript">
+	var json_data = [{text:"Targaryen",size:12},
+                {text:"Greyjoy",size:5},
+                {text:"Lannister",size:10},
+                {text:"Stark",size:22},
+                {text:"Baratheon",size:10},
+                {text:"Frey",size:7},
+                {text:"Tully",size:5},
+                {text:"Martell",size:8},
+                {text:"Mormont",size:3},
+                {text:"Arryn",size:1},
+                {text:"Tyrell",size:4},
+                {text:"Umber",size:1},
+                {text:"Bolton",size:3}];
+	//json数据 : netease 163 toplist
+        var rect_box,info_box, svg;
+	// //存储节点元素---用于直接索引
+	   info_box = document.getElementsByClassName('topInfo')[0];
+	// //直方图描绘函数
+		// function draw_rect(){
+		// 	svg = document.getElementById("Rect");
+		// 	var rect ;
+		// 	var height;
+		// 	var text_ ;
+		// 	//画20个直方
+		// 	for(var i = 0; i < 20; i ++ ){
+		// 		rect = document.createElement("rect");
+		// 		svg.appendChild(rect);
+				
+		// 		var boxoffice = json_data[i]["sumBoxInfo"];//从json_data中获取票房数据
+		// 		var boxoffice_num = parseFloat(json_data[i]["sumBoxInfo"].substring(0,boxoffice.length - 1));//票房数据的格式是带单位的（1.1亿/1560万）,对这个数据进行裁剪
+		// 		if(boxoffice[boxoffice.length -1] =="亿")boxoffice_num *= 10000;//将以亿结尾的票房乘10000达到以万为单位
+		// 		console.log(boxoffice_num);//调试用，控制台输出
+		// 		boxoffice_num /= 1000; //降低高度
+		// 		height = boxoffice_num;//直方高度
+		// 		rect.outerHTML="<rect class='rect' x="+(50 + i* 35)+" y="+(600-height)+" width=34 height="+ height+" fill='rgb(188,208,197)' onmouseover='rect_show_text("+i+")' onmouseout='rect_hidden_text("+i+")' onclick='rect_clicked("+i+")' clicked_=0 />";
+                
+		// 	}
+		// 	rect_box = document.getElementsByClassName("rect");//直方的节点数组
+        //     addX_axis(svg,40,760,600);
+        //     addY_axis(svg,40,0,600);
+        //     addX_Arrow(svg, 760,600);
+        //     addY_Arrow(svg,40, 0);
+        //     addX_scale(svg, 40 + 10 , 600, 20, 700, 'movie');
+        //     addY_scale(svg, 40, 600, 20, 600, "boxOffice/亿", 0.1);
+        // }
+var w=window.innerWidth|| document.documentElement.clientWidth|| document.body.clientWidth;
+var h=window.innerHeight|| document.documentElement.clientHeight|| document.body.clientHeight;    
+    var houseName = new Array();
+    var memberSize = new Array();
+    for(var i  =0; i < 13; i++)
+    {
+        houseName[i] = json_data[i]["text"];
+        memberSize[i] = json_data[i]["size"]*20;
+    }
+
+var rec_w = null;
+    function draw_hist_d3(svg, dataX, dataY)
+    {
+        if(dataX.length != dataY.length)alert("different lenth!");
+        var svg_w = w*.9-100,
+        svg_h = h;
+       rec_w = (svg_w-50)/ (dataX.length)-2;
+        svg.selectAll("rect").data(dataY)
+        .enter()
+        .append("rect")
+        .attr("x",function(d,i){return (50 + i* (rec_w+2));})
+        .attr("y", function(d){return (svg_h-d);})
+        .attr("width", rec_w)
+        .attr("height", function(d, i){return d})
+        .attr("fill",'#aaa' )
+        .attr("onmouseover", function(d, i){return "rect_show_text("+i+")"; })
+        .attr("onmouseout",function(d, i){return "rect_hidden_text("+i+")";})
+        .attr("onclick",function(d, i){return "rect_clicked("+i+")"})
+        .attr("clicked_", 0)
+        .attr("class", "rect");
+
+        rect_box = document.getElementsByClassName("rect");//直方的节点数组
+        // addX_axis(svg,40,760,600);
+        // addY_axis(svg,40,0,600);
+        // addX_Arrow(svg, 760,600);
+        // addY_Arrow(svg,40, 0);
+        // addX_scale(svg, 40 + 10 , 600, 20, 700, 'movie');
+        // addY_scale(svg, 40, 600, 20, 600, "boxOffice/亿", 0.1);
+    }
+        //在鼠标进入矩形时
+        function rect_show_text(i)
+        {
+            rect_box[i].setAttribute("fill", "#999");//调整颜色
+            var x = rect_box[i].getAttribute("x");
+            var y = rect_box[i].getAttribute("y");
+            info_box.setAttribute("style","overflow:unset;position:absolute;");
+            info_box.children[0].innerHTML = houseName[i];
+            info_box.children[1].innerHTML = memberSize[i]/20;
+            info_box.style.top = y-65+"px";
+            info_box.style.left = x-(50-rec_w/2 - w*.05)+"px";
+            document.getElementById("houses").style.backgroundImage = "url(../GOT_relationships/familys/"+houseName[i]+".jpg)";
+        }
+        //在鼠标离开矩形时
+        function rect_hidden_text(i)
+        {
+            rect_box[i].setAttribute("fill", "#aaa");
+        }
+        //添加x轴
+        function addX_axis(svg,x1,x2, y)
+        {
+            var line = document.createElement("line");
+            var append_ = svg.appendChild || svg.append;
+            svg.append(line);
+            line.outerHTML="<line x1="+x1+" y1="+y+" x2="+x2+" y2="+y+" style='stroke:white;stroke-width:1px;'></line>"
+        }
+        //添加y轴
+        function addY_axis(svg,x,y1, y2)
+        {
+            var line = document.createElement("line");
+            var append_ = svg.appendChild || svg.append;
+            append_(line);
+            line.outerHTML="<line x1="+x+" y1="+y1+" x2="+x+" y2="+y2+" style='stroke:white;stroke-width:1px;'></line>"
+        }
+        //添加Arrow
+        function addX_Arrow(svg, x, y)
+        {
+            var line1 = document.createElement("line");
+            var line2 = document.createElement("line");
+            var append_ = svg.appendChild || svg.append;
+            append_(line2);
+            append_(line1);
+            line1.outerHTML="<line x1="+x+" y1="+y+" x2="+(x-5)+" y2="+(y-2)+" style='stroke:white;stroke-width:1px;'></line>";
+            line2.outerHTML="<line x1="+x+" y1="+y+" x2="+(x-5)+" y2="+(y+2)+" style='stroke:white;stroke-width:1px;'></line>";
+        }
+        function addY_Arrow(svg, x, y)
+        {
+            var line1 = document.createElement("line");
+            var append_ = svg.appendChild || svg.append;
+            append_(line2);
+            append_(line1);
+            line1.outerHTML="<line x1="+x+" y1="+y+" x2="+(x-2)+" y2="+(y+5)+" style='stroke:white;stroke-width:1px;'></line>";
+            line2.outerHTML="<line x1="+x+" y1="+y+" x2="+(x+2)+" y2="+(y+5)+" style='stroke:white;stroke-width:1px;'></line>";
+        }
+        function addX_scale(svg, x0, y0, num, width, info="")
+        {
+            var line;
+            var step = parseInt(width/num);
+            var offset = parseInt(step/2);
+            var append_ = svg.appendChild || svg.append;
+            for(var i = 0; i < num; i++ )
+            {
+                line = document.createElement("line");
+                append_(line);
+                line.outerHTML="<line x1="+(x0 +step*i + offset)+" y1="+y0+" x2="+( x0 + step*i + offset)+" y2="+(y0+3)+" style='stroke:white;stroke-width:1px;'></line>";
+            }
+            if(info == "")return;
+            var text = document.createElement("text");
+            var append_ = svg.appendChild || svg.append;
+            append_("text")
+            .attr("x",( x0 + step*(num-1) + offset*2)).attr("y",(y0 + 20)).attr("fill" ,"white").text(info);
+        }
+        function addY_scale(svg, x0, y0, num, height, info="", value)
+        {
+            var line;
+            var step = parseInt(height/num);
+            var scale_value = (value)*step;
+            var append_ = svg.appendChild || svg.append;
+            var offset = 0;
+            for(var i = 0; i < num; i++ )
+            {
+                line = document.createElement("line");
+                append_(line);
+                line.outerHTML="<line x1="+(x0)+" y1="+( y0 -( step*i + offset )) +" x2="+( x0 - 3)+" y2="+( y0 -( step*i + offset ))+" style='stroke:white;stroke-width:1px;'></line>";
+            }
+            var text = document.createElement("text");
+            append_(text); 
+            text.outerHTML = "<text x="+(x0 - 30)+" y="+(y0 -( step*(num-1) + offset - 5 ))+" fill='white' > "+scale_value*(num-1)+"</text>";
+            if(info == "")return;
+            text = document.createElement("text");
+            append_(text); 
+            text.outerHTML = "<text x="+(x0 + 10)+" y="+(y0 -( step*(num-1) + offset*2 ))+" fill='white' > "+info+"</text>";
+        }
+
+        svg = d3.select("#board").append("svg").attr("height",h).attr("width", w*.9).attr("style", "margin-left:5%;");
+		window.onload = draw_hist_d3(svg, houseName, memberSize);//此处并没有使用对象，而是用前面的方式
+	</script>
+        </body>
+    
+</html>

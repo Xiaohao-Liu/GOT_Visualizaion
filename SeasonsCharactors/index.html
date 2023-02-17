@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seasons' Characctors</title>
+    <script src="http://cuc.yingshinet.com/d3.v3.min.js"></script>
+    <style>
+        *{padding:0px;margin:0px;}
+        .bar ul{
+            list-style: none;
+        }
+        .bar li{
+            height:20px;
+            transition: ease .5s;
+            float:left;
+            border: 1px solid white;
+            box-sizing: border-box;
+            cursor:pointer;
+            text-align:center;
+            line-height: 20px;
+            font-size:14px;
+            color:white;
+        }
+
+    </style>
+</head>
+<body>
+<div class="bar" id="seasons_bar">
+    <ul>
+
+    </ul>
+</div>
+
+<script>
+    var h = window.innerHeight
+    var w = window.innerWidth
+    var seasons_num = null;
+    var seansons = null;
+    d3.json("sources/characters_1.json", function(error, root){
+       if(error) return console.log(error);
+       console.log(root);
+       seasons_num = new Array(0,0,0,0,0,0,0,0);
+       seasons = [[0],[0],[0],[0],[0],[0],[0],[0]];
+       var sum = 0;
+       for(var i = 0;i < root.length; i++){
+           TvSeries = root[i].TvSeries;
+           for(var j = 0; j < TvSeries.length; j ++){
+               var index = parseInt(TvSeries[j].substring(7, 8)) - 1;
+               seasons_num[index] += 1;
+               sum += 1;
+           }
+       }
+
+       d3.select("#seasons_bar").select("ul").selectAll("li").data(seasons_num).enter().append("li")
+           .style("width", function(d){return (d/sum)*w+"px"}).style("background-color",function(d){return "rgb("+d+","+(d/2+58)+",255)";}).text(function(d,i){return "Season "+ (i+1);})
+           .on("mouseenter", function(d){
+               d3.select(this).style("height","40px")
+                   .style("line-height","40px")
+                   .style("font-size", "20px")
+                   .text(d)
+           })
+           .on("mouseout", function(d,i){
+               d3.select(this).style("height","20px")
+                   .style("line-height","20px")
+                   .style("font-size", "16px")
+                   .text("Season "+ (i+1))
+           })
+
+
+    });
+
+</script>
+</body>
+
+</html>

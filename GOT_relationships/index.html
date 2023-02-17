@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>GOT Force</title>
+	<style type="text/css">
+		*{margin:0;padding:0;}
+		.forceCircle{
+			position: absolute;
+		    background-size: cover;
+		    background-position: center;
+		    background-repeat: no-repeat;
+		    border-radius: 100px;
+		    box-shadow: 0px 2px 5px -2px;
+		    z-index: 0;
+		   text-align:center;
+		    transform: translate(-50%, -50%);
+		    cursor:pointer;
+		}
+		#info{
+			transition:ease .5s;
+			position:absolute;
+			height:300px;
+			width:300px;
+			top:20px;
+			left:20px;
+			transform: translate(5px, -30px);
+			z-index:0;
+			opacity:0;
+		}
+		#info #info-b{
+			position:absolute;
+			top:30px;
+			left:55px;
+			height:150px;
+			width:150px;
+			border-radius:100px;
+			background:#EEE;
+			box-shadow: 0px 2px 5px -2px #000;
+			/*border-left:10px solid #bbb;*/
+			line-height:60px;
+			text-indent:10px;
+			background-size:cover;
+			background-position:top;
+			overflow: hidden;
+
+		}
+		#bg:before{
+		    content:"";
+			height:calc(120%);
+			width:calc(120%);
+			position:fixed;
+			top:-10%;
+			left:-10%;
+			background-image:url(bg.jpg);
+			background-size:cover;
+			background-position: center;
+			z-index:-1;
+			filter:blur(20px);
+			background-attachment: unset;
+			overflow: hidden;
+		}
+		#info:before{
+		    content:"";
+		    position:absolute;
+			top:0;
+			left:20px;
+			height:100%;
+			width:200px;
+			border-radius:10px;
+			background:rgba(0, 0, 0, 0.65);
+			box-shadow: 0px 2px 5px -2px #000;
+			/*border-left:10px solid #bbb;*/
+			line-height:60px;
+			text-indent:10px;
+			padding-right:20px;
+			background-size:cover;
+			background-position:top;
+			overflow: hidden;
+		}
+		#info #name{
+			position: absolute;
+			bottom:10px;
+			left:20px;
+			height:30px;
+			line-height: 30px;
+			background-color: rgba(0,0,0,0.75);
+		    padding: 5px 20px;
+		    text-align: center;
+		    color: white;
+		    font-weight: bold;
+		}
+		#info #arrow_{
+			position:absolute;
+			top:20px;
+			left:-15px;
+			border-right: 18px solid rgba(0,0,0,0.8);
+			border-left:18px solid transparent;
+			border-top:10px solid transparent;
+			border-bottom:10px solid transparent;
+			z-index:-1;
+		}
+		#info #family-board{
+		    position:absolute;
+			top:0;
+			left:250px;
+			height:100%;
+			width:140px;
+			border-radius:10px;
+			background:rgba(0, 0, 0, 0.65);
+			box-shadow: 0px 2px 5px -2px #000;
+			/*border-left:10px solid #bbb;*/
+			line-height:60px;
+			text-indent:10px;
+			background-size:cover;
+			background-position:top;
+			overflow: hidden;
+		}
+		#info #info-more{
+			height: calc(100% - 20px);
+		    background: white;
+		    position: absolute;
+		    top: 0;
+		    left: 300px;
+		    padding: 10px;
+		    padding-left: 30px;
+		    border-radius: 10px;
+		    box-shadow: 0px 2px 5px -2px #000;
+		    z-index: -1;
+		}
+		#info-more p{
+			line-height: 40px;
+		}
+		#bg{
+		 /*   transition:ease .5s;*/
+			/*height:calc(100% + 20px);*/
+			/*width:calc(100% + 20px);*/
+			position:fixed;
+			/*top:-10px;*/
+			/*left:-10px;*/
+			/*background-image:url(bg.jpg);*/
+			/*background-size:cover;*/
+			/*background-position: center;*/
+			z-index:-1;
+			/*overflow: hidden;*/
+		}
+		.relation-icon{
+			height:20px;
+			width:20px;
+			/*background-color:white;*/
+			background-size:18px 18px;
+			background-repeat: no-repeat;
+			background-position:center;
+			position: absolute;
+			cursor:pointer;
+		}
+
+		#title-logo:after{
+			content:"";
+			position: absolute;
+			height:100%;
+			width: 100%;
+			background-color:#000;
+			opacity: 1;
+			z-index: -1;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="GOT.css">
+</head>
+<body>
+<div style="
+    position: fixed;
+    height: 50px;
+    width: 100px;
+    background: white;
+    box-shadow: 0px 1px 10px -5px #000;
+    /* border-radius: 100px; */
+    bottom: 0;
+    left:20px;
+    z-index: 10;
+    line-height: 50px;
+    cursor: pointer;
+    color: black;
+    background-image: url(&quot;../home.svg&quot;);
+    background-size: 30px;
+    background-repeat: no-repeat;
+    background-position: 5px 10px;
+    text-indent: 45px;
+" onclick="window.open('../index.html')">Home</div>
+	<div id="bg"></div>
+	<!-- <div id="nodes-b">-->
+	<!--	<div id='info'><div id='info-b'><div id='name'></div></div><div id='arrow'></div></div>-->
+	<!--</div>-->
+	<div class="title" id="title">
+		<div class="loading"></div>
+		<div class="title-left"></div>
+		<div class="title-right"></div>
+	</div>
+
+	<div style="position:absolute;bottom:0px;right:0px;font-size:20px;width: 250px;height: 200px;color:black;">
+		<div style="position:absolute;top:50px;left:100px;font-size:20px;color:white;">数据可视化</div>
+		<div style="position:absolute;top:75px;left:100px;font-size:12px;color:#999;">DataVisulization</div>
+		<div style="position:absolute;top:100px;left:100px;font-size:14px;color:white;">蒋汶娟 刘晓豪</div>
+		<div style="position:absolute;top:120px;left:100px;font-size:10px;color:#999;">JiangWenjuan LiuXiaohao</div>
+		<div style="position:absolute;top: 150px;left:100px;font-size: 30px;color:white;font-weight: bold;">D3 Force</div>
+	</div>
+	<div id="title-logo" style="position:absolute;top: 30px;right: 20px;font-size:20px;width: 350px;height: 75px;color:white;border-radius:10px;overflow: hidden;z-index:-1;box-shadow: 0px 2px 5px -3px #000;">
+		<div style="background:url('logo.jpg');height:52px;width:52px;background-size:cover;border-radius:50px;position:absolute;top:10px;left:10px;"></div>
+		<div style="position:absolute;top:10px;left:calc((100% - 200px) /2);height:40px;width:200px;line-height:40px;font-size:18px;">权力的游戏人物关系图</div>
+	<a href=" " style="text-decoration:none;position:absolute;top:35px;left:calc((100% - 200px) /2);height:40px;width:200px;line-height:40px;font-size:14px;color:#DDD;">The Game Of Throne</a >
+</div>
+	<script type="text/javascript" src="http://cuc.yingshinet.com/d3.v3.min.js"></script>
+	<script type="text/javascript" src="charactors.js"></script>
+	<script type="text/javascript" src="relation.js"></script>
+	<script type="text/javascript" src="force.js"></script>
+
+	<script type="text/javascript">
+		function transition_(){
+			var top_ = document.getElementById("title");
+			top_.style.opacity = 0;
+			setTimeout(function(){top_.style.display = "none";}, 1000)
+		}
+
+		window.load = setTimeout(function(){transition_()}, 1000);
+	</script>
+</body>
+</html>

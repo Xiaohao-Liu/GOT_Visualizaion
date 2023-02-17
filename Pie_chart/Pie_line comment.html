@@ -1,0 +1,128 @@
+
+<html>
+    <body>
+<script src="../d3.v3.min.js" charset="utf_8"></script>
+<script>
+    var w = window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+
+    var h = window.innerHeight ||
+        document.documentElement.clientHeight ||
+        document.body.clientHeight;
+    var width = w * 0.9;
+    var height = h * 0.9;
+    var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+    //转化为适合生成饼图的数组
+    var dataset=[["Chrome",39.49],["IE",29.06],["QQ",4.84],["2345",4.28],["搜狗高速",4.19],["猎豹",2.24],["其他",15.91]];
+    //构建一个饼图布局，使用默认的方法访问数据，默认不排序。起始弧度为0，结束弧度为2π,返回的layout可以是对象，也可以是函数
+    var pie = d3.layout.pie()
+            .value(function(d){return d[1];});//设置value值为上面的2二维数组中的数字
+    var piedata=pie(dataset);//piedata 就是转换后的数据
+    //外半径和内半径
+    var innerRadius=0;
+    var outerRadius=150;
+    //创建弧生成器
+    var arc = d3.svg.arc()
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius);
+    var color = d3.scale.category20();//有20种颜色的颜色比例尺
+    //添加对应数目的弧组，即<g>元素
+    var arcs=svg.selectAll("g")
+                .data(piedata)//绑定转换后数据
+                .enter()
+                .append("g")
+                .attr("transform","translate("+width/2+","+height/2+")");
+    //对每个g元素添加路径元素
+    arcs.append("path")//每个g元素都追加一个path元素用绑定到这个g的数据d生成路径信息
+        .attr("fill", function (d, i) {
+            return color(i);
+        })
+        .attr("d",function(d){
+                return arc(d);//使用弧生成器将角度转为弧度（d3使用弧度绘制）
+          })
+        .transition()					//设置动画
+        .ease('bounce')					//动画效果
+        .duration(2000)					//持续时间
+        .attrTween('d',tweenPie)		//两个属性之间平滑的过渡。
+        .transition()
+        //.ease("elastic")
+        .duration(750)
+    function tweenPie(b){
+        //这里将每一个的弧的开始角度和结束角度都设置成了0
+        //然后向他们原始的角度(b)开始过渡，完成动画。
+        b.innerRadius=0;	
+        var i=d3.interpolate({startAngle:0,endAngle:0},b);
+        //下面的函数就是过渡函数，他是执行多次最终达到想要的状态。
+        return function(t){return arc(i(t));};
+    }
+
+    //添加弧内文字元素
+    arcs.append("text")
+          .attr("transform",function(d){
+              var x=arc.centroid(d)[0]*1.1;
+              var y=arc.centroid(d)[1]*1.1;//能算出弧线的中心
+              return 'translate('+x+','+y+')';
+          })
+          .attr('text-anchor','middle')
+          .attr("font-size",function(d){
+              return d.data[1]+"px";
+          })//因为被绑定的数据是对象，text() 里返回的是 d.data 
+          .text(function(d){
+          //计算市场份额和百分比
+          var percent = Number(d.value) / d3.sum(dataset, function(d) { return d[1]; }) * 100;
+          //保留一个小数点，末尾加一个百分号返回
+          return percent.toFixed(1) + '%';
+          })
+          .on("mouseover",function(d,i){
+              if(d.data[1]<10){
+                  d3.select(this)
+                  .attr("font-size",30);
+              }
+          })
+          .on("mouseout",function(d,i){
+              if(d.data[1]<100){
+                  d3.select(this)
+                  .attr("font-size",function(d){
+                      return d.value+"px";
+                  });
+              }
+          });
+    //添加连接弧外文字的直线元素
+    arcs.append("line")
+          .attr("stroke","black")
+          .attr("x1",function(d){
+              return arc.centroid(d)[0]*2;
+          })
+          .attr("y1",function(d){
+              return arc.centroid(d)[1]*2;
+          })
+          .attr("x2",function(d){
+              return arc.centroid(d)[0]*2.2;
+          })
+          .attr("y2",function(d){
+              return arc.centroid(d)[1]*2.5;
+          });
+    //添加弧外的文字元素
+    arcs.append("text")
+        .attr("transform",function(d){
+            var x=arc.centroid(d)[0]*2.5;
+            var y=arc.centroid(d)[1]*2.5;
+            return "translate("+x+","+y+")";
+        })
+        .attr("text-anchor","middle")
+        .attr("font-size",12)
+        .text(function(d){
+            return d.data[0];
+        })
+    console.log(dataset);
+    console.log(piedata);
+          
+    
+</script>
+</body>
+
+</html>

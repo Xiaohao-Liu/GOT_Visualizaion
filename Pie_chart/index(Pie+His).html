@@ -1,0 +1,343 @@
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>RectGraph</title>
+	<script src="./d3.v3.min.js"></script>
+	<style type="text/css">
+	*{padding :0;margin:0;}
+	#Rect
+	{
+		position: absolute;
+		z-index: 0px;
+		transition: ease .5s;
+	}
+	.rect_text{
+		fill:white;
+	}
+	.rect_text_2
+	{
+		fill:rgba(255,255,255,0.75);
+	}
+	.topInfo
+	{
+		background: #EEE;
+		position: relative;
+		height: 50px;
+		width: 100px;
+		top: 10px;
+		left: 50px;
+		border-radius: 5px;
+		box-shadow: 0px 7px 20px -9px #000;
+		overflow: hidden;
+		transition: ease .5s;
+	}
+	.info
+	{
+		width:100%;
+		height:25px;
+		line-height:25px;
+		text-align:center;
+		color:black;
+		text-overflow: clip;
+		overflow: hidden;
+	}
+	.info1
+	{
+		background: #c0c0c0;
+		border-top-right-radius: 4px;
+		border-top-left-radius: 4px;
+		font-size:13px;
+		font-weight: bold;
+	}
+	.info2
+	{
+		font-size:13px;
+	}
+	.topInfo .bottom_arrow
+	{
+		height:10px;
+		width:0px;
+		display: block;
+		border-right: 10px solid transparent;
+		border-left:10px solid transparent;
+		border-top:10px solid #EEE;
+		margin:auto;
+	}
+</style>
+</head>
+<body>
+	<div id="flame"></div>
+	<div style="position:absolute;top:500px;right:100px;font-size:20px;width: 350px;height: 200px;color:black;">
+		<div style="position:absolute;top:50px;left:100px;font-size:20px;color:black;">数据可视化</div>
+		<div style="position:absolute;top:75px;left:100px;font-size:12px;color:#999;">DataVisulization</div>
+		<div style="position:absolute;top:100px;left:100px;font-size:14px;color:black;">蒋汶娟 刘晓豪</div>
+		<div style="position:absolute;top:120px;left:100px;font-size:10px;color:#999;">JiangWenjuan LiuXiaohao</div>
+		<div style="position:absolute;top: 150px;left:100px;font-size: 30px;color:black;font-weight: bold;">D3 Visualization</div>  
+	</div>
+	<div style="background-image:url('maoyanicon.png');position: absolute;height: 40px;width: 40px;top: 30px;left:calc((100% - 500px)/2 + 20px);background-size: cover;border-radius: 40px;box-shadow: 0px 2px 5px -2px #000;z-index:4;"></div>
+	<div style="position:absolute;top:20px;left:calc((100% - 500px)/2);height:40px;width:500px;line-height:40px;z-index: 3;font-size: 22px;font-weight: bold;text-align:center;background:white;border-radius:10px;">Maoyan Real-time box office</div> 
+	<div style="position:absolute;top:50px;left:calc((100% - 500px)/2);height:30px;width:500px;line-height:30px;z-index: 3;font-size: 14px;font-weight: bold;text-align:center;background:white;border-radius:10px;">Maoyan Real-time box office</div>              
+	<div class="expand-board" id="movies" param="700" style="background: rgb(238, 238, 238); height: 700px;position: absolute;z-index: 1;border-right: 1px solid #a2a2a2;">
+		<!--tiao xin tu-->
+
+		<div class='topInfo'>
+
+			<div class='info info1'>2018-04-07</div>
+			<div class='info info2'>MaoYan</div>
+			<div class='bottom_arrow'></div>
+			<div style="background-image:url('maoyanicon.png');position: absolute;height: 20px;width: 20px;top: -8px;left: -8px;background-size: cover;border-radius: 10px;box-shadow: 0px 2px 5px -2px #000;"></div>
+		</div> 
+	</div>
+
+	<script type="text/javascript">
+		var w = window.innerWidth ||
+				document.documentElement.clientWidth ||
+				document.body.clientWidth;
+
+		var h = window.innerHeight ||
+				document.documentElement.clientHeight ||
+				document.body.clientHeight;
+		var json_data =[{"avgSeatView":"12.0%","avgShowView":"16","avgViewBox":"34.5","boxInfo":"5911.20","boxRate":"39.1%","movieId":1211727,"movieName":"反贪风暴4","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映4天","releaseInfoColor":"#666666 1.00","seatRate":"32.5%","showInfo":"107157","showRate":"30.6%","splitAvgViewBox":"32.1","splitBoxInfo":"5493.86","splitBoxRate":"39.6%","splitSumBoxInfo":"3.18亿","sumBoxInfo":"3.43亿","viewInfo":"171.0","viewInfoV2":"171.0万"},{"avgSeatView":"7.3%","avgShowView":"10","avgViewBox":"36.6","boxInfo":"3286.86","boxRate":"21.7%","milestone":{"box":20000000000,"boxCopy":"破2亿","dateTime":1554635760000,"imageUrl":"https://img.meituan.net/pro/88a3747e1a4ce2fd64ec0f0df3d8cf10238717.jpg","movieId":248123},"movieId":248123,"movieName":"雷霆沙赞！","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映3天","releaseInfoColor":"#666666 1.00","seatRate":"33.1%","showInfo":"93046","showRate":"26.6%","splitAvgViewBox":"33.4","splitBoxInfo":"3000.54","splitBoxRate":"21.6%","splitSumBoxInfo":"1.85亿","sumBoxInfo":"2.02亿","viewInfo":"89.7","viewInfoV2":"89.7万"},{"avgSeatView":"16.4%","avgShowView":"18","avgViewBox":"31.7","boxInfo":"2027.53","boxRate":"13.4%","movieId":1239544,"movieName":"调音师","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映5天","releaseInfoColor":"#666666 1.00","seatRate":"9.0%","showInfo":"36974","showRate":"10.5%","splitAvgViewBox":"28.6","splitBoxInfo":"1829.51","splitBoxRate":"13.1%","splitSumBoxInfo":"8220.0万","sumBoxInfo":"9087.1万","viewInfo":"63.8","viewInfoV2":"63.8万"},{"avgSeatView":"16.4%","avgShowView":"17","avgViewBox":"35.4","boxInfo":"1093.26","boxRate":"7.2%","movieId":346765,"movieName":"小飞象","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映10天","releaseInfoColor":"#666666 1.00","seatRate":"4.5%","showInfo":"19014","showRate":"5.4%","splitAvgViewBox":"32.4","splitBoxInfo":"1001.69","splitBoxRate":"7.2%","splitSumBoxInfo":"1.15亿","sumBoxInfo":"1.25亿","viewInfo":"30.8","viewInfoV2":"30.8万"},{"avgSeatView":"12.4%","avgShowView":"13","avgViewBox":"33.7","boxInfo":"966.03","boxRate":"6.3%","movieId":1212492,"movieName":"老师·好","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映17天","releaseInfoColor":"#666666 1.00","seatRate":"5.7%","showInfo":"23794","showRate":"6.8%","splitAvgViewBox":"31.0","splitBoxInfo":"889.85","splitBoxRate":"6.4%","splitSumBoxInfo":"2.80亿","sumBoxInfo":"3.03亿","viewInfo":"28.6","viewInfoV2":"28.6万"},{"avgSeatView":"9.3%","avgShowView":"8","avgViewBox":"35.7","boxInfo":"642.03","boxRate":"4.2%","movieId":345875,"movieName":"风中有朵雨做的云","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映4天","releaseInfoColor":"#666666 1.00","seatRate":"5.1%","showInfo":"23043","showRate":"6.5%","splitAvgViewBox":"32.6","splitBoxInfo":"587.39","splitBoxRate":"4.2%","splitSumBoxInfo":"4675.9万","sumBoxInfo":"5109.9万","viewInfo":"17.9","viewInfoV2":"17.9万"},{"avgSeatView":"8.1%","avgShowView":"7","avgViewBox":"28.4","boxInfo":"219.71","boxRate":"1.4%","movieId":1216383,"movieName":"比悲伤更悲伤的故事","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映25天","releaseInfoColor":"#666666 1.00","seatRate":"2.4%","showInfo":"11608","showRate":"3.3%","splitAvgViewBox":"25.5","splitBoxInfo":"197.52","splitBoxRate":"1.4%","splitSumBoxInfo":"8.45亿","sumBoxInfo":"9.43亿","viewInfo":"7.7","viewInfoV2":"7.7万"},{"avgSeatView":"13.7%","avgShowView":"12","avgViewBox":"33.5","boxInfo":"199.16","boxRate":"1.3%","movieId":1219670,"movieName":"海市蜃楼","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映11天","releaseInfoColor":"#666666 1.00","seatRate":"1.0%","showInfo":"5190","showRate":"1.4%","splitAvgViewBox":"30.2","splitBoxInfo":"179.47","splitBoxRate":"1.2%","splitSumBoxInfo":"9241.8万","sumBoxInfo":"1.02亿","viewInfo":"5.9","viewInfoV2":"5.9万"},{"avgSeatView":"7.3%","avgShowView":"6","avgViewBox":"31.2","boxInfo":"160.85","boxRate":"1.0%","movieId":1229702,"movieName":"青蛙王子历险记","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映3天","releaseInfoColor":"#666666 1.00","seatRate":"2.1%","showInfo":"9841","showRate":"2.8%","splitAvgViewBox":"28.8","splitBoxInfo":"148.43","splitBoxRate":"1.0%","splitSumBoxInfo":"618.5万","sumBoxInfo":"670.5万","viewInfo":"5.1","viewInfoV2":"5.1万"},{"avgSeatView":"17.4%","avgShowView":"18","avgViewBox":"40.3","boxInfo":"142.75","boxRate":"0.9%","movieId":1167831,"movieName":"波西米亚狂想曲","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映17天","releaseInfoColor":"#666666 1.00","seatRate":"0.4%","showInfo":"2053","showRate":"0.5%","splitAvgViewBox":"36.6","splitBoxInfo":"129.69","splitBoxRate":"0.9%","splitSumBoxInfo":"8174.9万","sumBoxInfo":"9007.8万","viewInfo":"3.5","viewInfoV2":"3.5万"},{"avgSeatView":"10.8%","avgShowView":"10","avgViewBox":"36.2","boxInfo":"93.66","boxRate":"0.6%","movieId":341139,"movieName":"惊奇队长","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映31天","releaseInfoColor":"#666666 1.00","seatRate":"0.5%","showInfo":"2783","showRate":"0.7%","splitAvgViewBox":"32.7","splitBoxInfo":"84.58","splitBoxRate":"0.6%","splitSumBoxInfo":"9.49亿","sumBoxInfo":"10.32亿","viewInfo":"2.5","viewInfoV2":"2.5万"},{"avgSeatView":"23.2%","avgShowView":"19","avgViewBox":"37.0","boxInfo":"49.38","boxRate":"0.3%","movieId":1205909,"movieName":"祈祷落幕时","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"点映","releaseInfoColor":"#FF9900 1.00","seatRate":"0.1%","showInfo":"710","showRate":"0.2%","splitAvgViewBox":"33.4","splitBoxInfo":"44.59","splitBoxRate":"0.3%","splitSumBoxInfo":"44.5万","sumBoxInfo":"49.3万","viewInfo":"1.3","viewInfoV2":"1.3万"},{"avgSeatView":"8.6%","avgShowView":"8","avgViewBox":"32.7","boxInfo":"44.09","boxRate":"0.2%","movieId":245881,"movieName":"麦兜我和我妈妈","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"重映3天","releaseInfoColor":"#666666 1.00","seatRate":"0.4%","showInfo":"1811","showRate":"0.5%","splitAvgViewBox":"30.0","splitBoxInfo":"40.41","splitBoxRate":"0.2%","splitSumBoxInfo":"4565.7万","sumBoxInfo":"4580.2万","viewInfo":"1.3","viewInfoV2":"1.3万"},{"avgSeatView":"16.1%","avgShowView":"13","avgViewBox":"34.8","boxInfo":"36.14","boxRate":"0.2%","movieId":1206605,"movieName":"绿皮书","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映38天","releaseInfoColor":"#666666 1.00","seatRate":"0.1%","showInfo":"832","showRate":"0.2%","splitAvgViewBox":"31.6","splitBoxInfo":"32.91","splitBoxRate":"0.2%","splitSumBoxInfo":"4.29亿","sumBoxInfo":"4.76亿","viewInfo":"1.0","viewInfoV2":"1.0万"},{"avgSeatView":"16.1%","avgShowView":"13","avgViewBox":"31.9","boxInfo":"32.68","boxRate":"0.2%","movieId":247295,"movieName":"驯龙高手3","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映38天","releaseInfoColor":"#666666 1.00","seatRate":"0.1%","showInfo":"851","showRate":"0.2%","splitAvgViewBox":"29.6","splitBoxInfo":"30.28","splitBoxRate":"0.2%","splitSumBoxInfo":"3.35亿","sumBoxInfo":"3.65亿","viewInfo":"1.0","viewInfoV2":"1.0万"},{"avgSeatView":"8.1%","avgShowView":"6","avgViewBox":"31.0","boxInfo":"22.66","boxRate":"0.1%","movieId":343987,"movieName":"精灵怪物：疯狂之旅","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映10天","releaseInfoColor":"#666666 1.00","seatRate":"0.2%","showInfo":"1252","showRate":"0.3%","splitAvgViewBox":"29.2","splitBoxInfo":"21.34","splitBoxRate":"0.1%","splitSumBoxInfo":"548.6万","sumBoxInfo":"587.4万","viewInfo":"0.7","viewInfoV2":"7308"},{"avgSeatView":"14.2%","avgShowView":"10","avgViewBox":"38.0","boxInfo":"20.93","boxRate":"0.1%","movieId":507792,"movieName":"地久天长","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映17天","releaseInfoColor":"#666666 1.00","seatRate":"0.1%","showInfo":"609","showRate":"0.1%","splitAvgViewBox":"35.2","splitBoxInfo":"19.38","splitBoxRate":"0.1%","splitSumBoxInfo":"4088.4万","sumBoxInfo":"4402.7万","viewInfo":"0.5","viewInfoV2":"5503"},{"avgSeatView":"6.4%","avgShowView":"4","avgViewBox":"28.2","boxInfo":"16.22","boxRate":"0.1%","movieId":1217497,"movieName":"功夫四侠：勇闯地宫","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映3天","releaseInfoColor":"#666666 1.00","seatRate":"0.3%","showInfo":"1756","showRate":"0.5%","splitAvgViewBox":"26.0","splitBoxInfo":"14.91","splitBoxRate":"0.1%","splitSumBoxInfo":"72.2万","sumBoxInfo":"78.6万","viewInfo":"0.5","viewInfoV2":"5734"},{"avgSeatView":"11.8%","avgShowView":"10","avgViewBox":"27.3","boxInfo":"14.99","boxRate":"<0.1%","movieId":1243239,"movieName":"熊出没·原始时代","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映62天","releaseInfoColor":"#666666 1.00","seatRate":"0.1%","showInfo":"582","showRate":"0.1%","splitAvgViewBox":"25.6","splitBoxInfo":"14.05","splitBoxRate":"0.1%","splitSumBoxInfo":"6.63亿","sumBoxInfo":"7.14亿","viewInfo":"0.5","viewInfoV2":"5482"},{"avgSeatView":"12.6%","avgShowView":"10","avgViewBox":"34.1","boxInfo":"14.01","boxRate":"<0.1%","movieId":341220,"movieName":"乐高大电影2","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映17天","releaseInfoColor":"#666666 1.00","seatRate":"<0.1%","showInfo":"417","showRate":"0.1%","splitAvgViewBox":"31.2","splitBoxInfo":"12.83","splitBoxRate":"<0.1%","splitSumBoxInfo":"1688.4万","sumBoxInfo":"1823.7万","viewInfo":"0.4","viewInfoV2":"4110"},{"avgSeatView":"2.6%","avgShowView":"2","avgViewBox":"27.5","boxInfo":"11.48","boxRate":"<0.1%","movieId":1206939,"movieName":"守灵","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映4天","releaseInfoColor":"#666666 1.00","seatRate":"0.5%","showInfo":"2324","showRate":"0.6%","splitAvgViewBox":"24.6","splitBoxInfo":"10.29","splitBoxRate":"<0.1%","splitSumBoxInfo":"174.8万","sumBoxInfo":"194.9万","viewInfo":"0.4","viewInfoV2":"4171"},{"avgSeatView":"4.7%","avgShowView":"3","avgViewBox":"33.7","boxInfo":"9.34","boxRate":"<0.1%","movieId":1206824,"movieName":"人间·喜剧","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映10天","releaseInfoColor":"#666666 1.00","seatRate":"0.2%","showInfo":"1059","showRate":"0.3%","splitAvgViewBox":"31.9","splitBoxInfo":"8.87","splitBoxRate":"<0.1%","splitSumBoxInfo":"5815.3万","sumBoxInfo":"6258.1万","viewInfo":"0.2","viewInfoV2":"2774"},{"avgSeatView":"10.5%","avgShowView":"9","avgViewBox":"36.2","boxInfo":"8.36","boxRate":"<0.1%","movieId":410629,"movieName":"阿丽塔：战斗天使","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映45天","releaseInfoColor":"#666666 1.00","seatRate":"<0.1%","showInfo":"260","showRate":"<0.1%","splitAvgViewBox":"33.1","splitBoxInfo":"7.65","splitBoxRate":"<0.1%","splitSumBoxInfo":"8.17亿","sumBoxInfo":"8.94亿","viewInfo":"0.2","viewInfoV2":"2311"},{"avgSeatView":"11.4%","avgShowView":"7","avgViewBox":"28.9","boxInfo":"2.44","boxRate":"<0.1%","movieId":1220571,"movieName":"我的英雄学院：两位英雄","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映24天","releaseInfoColor":"#666666 1.00","seatRate":"<0.1%","showInfo":"135","showRate":"<0.1%","splitAvgViewBox":"26.5","splitBoxInfo":"2.24","splitBoxRate":"<0.1%","splitSumBoxInfo":"3475.9万","sumBoxInfo":"3867.1万","viewInfo":"0.0","viewInfoV2":"846"},{"avgSeatView":"31.6%","avgShowView":"14","avgViewBox":"37.2","boxInfo":"1.70","boxRate":"<0.1%","movieId":1229799,"movieName":"过春天","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映24天","releaseInfoColor":"#666666 1.00","seatRate":"<0.1%","showInfo":"33","showRate":"<0.1%","splitAvgViewBox":"34.4","splitBoxInfo":"1.57","splitBoxRate":"<0.1%","splitSumBoxInfo":"910.4万","sumBoxInfo":"989.9万","viewInfo":"0.0","viewInfoV2":"456"},{"avgSeatView":"86.2%","avgShowView":"20","avgViewBox":"27.8","boxInfo":"1.55","boxRate":"<0.1%","movieId":1262087,"movieName":"醒来之爱的呼唤","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映31天","releaseInfoColor":"#666666 1.00","seatRate":"<0.1%","showInfo":"29","showRate":"<0.1%","splitAvgViewBox":"27.7","splitBoxInfo":"1.55","splitBoxRate":"<0.1%","splitSumBoxInfo":"274.7万","sumBoxInfo":"276.9万","viewInfo":"0.0","viewInfoV2":"560"},{"avgSeatView":"11.8%","avgShowView":"69","avgViewBox":"28.4","boxInfo":"1.36","boxRate":"<0.1%","movieId":1228761,"movieName":"把哥哥退货可以吗","myRefundNumInfo":"--","myRefundRateInfo":"--","onlineBoxRate":"--","refundViewInfo":"--","refundViewRate":"--","releaseInfo":"上映24天","releaseInfoColor":"#666666 1.00","seatRate":"<0.1%","showInfo":"7","showRate":"<0.1%","splitAvgViewBox":"27.2","splitBoxInfo":"1.31","splitBoxRate":"<0.1%","splitSumBoxInfo":"155.2万","sumBoxInfo":"171.9万","viewInfo":"0.0","viewInfoV2":"481"}];
+	//json数据 : netease 163 toplist
+	var rect_box, info_box, svg, svg2;
+	var arcs;
+	// //存储节点元素---用于直接索引
+	info_box = document.getElementsByClassName('topInfo')[0];
+
+	var boxoffice_num = new Array();
+	var moviesname = new Array();
+	var boxoffice_percent=[];
+	for(var i  =0; i < 22; i++)
+	{
+		moviesname[i] = json_data[i]["movieName"];
+        var boxoffice = json_data[i]["sumBoxInfo"];//从json_data中获取票房数据
+		var num = parseFloat(json_data[i]["sumBoxInfo"].substring(0,boxoffice.length - 1));//票房数据的格式是带单位的（1.1亿/1560万）,对这个数据进行裁剪
+        if(boxoffice[boxoffice.length -1] =="亿")num *= 10000;//将以亿结尾的票房乘10000达到以万为单位
+        boxoffice_num[i] = num/300;
+        
+    }
+    function draw_hist_d3(svg, dataX, dataY)
+    {
+    	if(dataX.length != dataY.length)alert("different lenth!");
+    	var svg_w = w*.55,
+    	svg_h = 650;
+    	var rec_w = (svg_w-20)/ dataX.length-2;
+    	svg.selectAll("rect").data(dataY)
+    	.enter()
+    	.append("rect")
+    	.attr("x",function(d,i){return (w*.025 + i* (rec_w+2));})
+    	.attr("y", function(d){return (svg_h-d);})
+    	.attr("width", rec_w)
+    	.attr("height", function(d, i){return d})
+    	.attr("fill",'#297b8bf0' )
+    	.on('mouseover', function(d, i){
+    		rect_show_text(i);
+    		arcs.select("path")[0][i].setAttribute("fill", "#0441a0");
+    		svg2.append("text")
+    		.attr("id","info")
+    		.attr("x",width/2)
+    		.attr("y",height/2)
+    		.attr("text-anchor","middle")
+    		.attr("font-size",36)
+    		.text(moviesname[i]);
+    		svg2.append("text")
+    		.attr("id","value")
+    		.attr("x",width/2)
+    		.attr("y",height/2+25)
+    		.attr("text-anchor","middle")
+    		.attr("font-size",20)
+    		.text(((boxoffice_percent[i]*100)+"").substring(0,4)+"%");
+    	})
+    	.on("mouseout",function(d, i){
+    		rect_hidden_text(i);
+    		arcs.select("path")[0][i].setAttribute("fill","rgb("+(230-i*11.5)+",89,131)");
+    		d3.select("#info")
+    		.remove();
+    		d3.select("#value")
+    		.remove();
+    	})
+        //.attr("onclick",function(d, i){return "rect_clicked("+i+")"})
+        .attr("clicked_", 0)
+        .attr("class", "rect");
+
+        rect_box = document.getElementsByClassName("rect");//直方的节点数组
+    }
+        //在鼠标进入矩形时
+        function rect_show_text(i)
+        {
+            rect_box[i].setAttribute("fill", "#0441a0");//调整颜色
+            var x = rect_box[i].getAttribute("x");
+            var y = rect_box[i].getAttribute("y");
+            info_box.setAttribute("style","overflow:unset;");
+            info_box.children[0].innerHTML = json_data[i]["movieName"];
+            info_box.children[1].innerHTML = json_data[i]["sumBoxInfo"];
+            info_box.style.top = y-15+"px";
+            info_box.style.left = x-32+"px";
+        }
+        //在鼠标离开矩形时
+        function rect_hidden_text(i)
+        {
+        	rect_box[i].setAttribute("fill", "#297b8bf0");
+        }
+
+        svg = d3.select("#movies").append("svg").attr("height",650).attr("width", w*.6).attr("style", "background-color:#EEE;");
+		window.onload = draw_hist_d3(svg, moviesname, boxoffice_num);//此处并没有使用对象，而是用前面的方式
+	</script>
+	<script src="../d3.v3.min.js" charset="utf_8"></script>
+	<script>
+		var width = w *.4;
+		var height = 700;
+		svg2 = d3.select("body")
+		.append("svg")
+		.attr("width", width)
+		.attr("height", height).attr("style","float:right;background:#EEE;");
+         //转化为适合生成饼图的数组
+         // var dataset=[["Chrome",39.49],["IE",29.06],["QQ",4.84],["2345",4.28],["搜狗高速",4.19],["猎豹",2.24],["其他",15.91]];
+         var dataset = []
+         var sum = 0
+         for(var i  = 0; i < boxoffice_num.length; i++){
+         	sum +=boxoffice_num[i]
+         }
+         boxoffice_percent=[]
+         for(var i  = 0; i < boxoffice_num.length; i++){
+         	boxoffice_percent[i] = boxoffice_num[i]/sum;
+         	dataset[i] = [moviesname[i], boxoffice_num[i]/sum]
+         }
+         //构建一个饼图布局，使用默认的方法访问数据，默认不排序。起始弧度为0，结束弧度为2π,返回的layout可以是对象，也可以是函数
+         var pie = d3.layout.pie()
+                 .value(function(d){return d[1];});//设置value值为上面的2二维数组中的数字
+         var piedata=pie(dataset);//piedata 就是转换后的数据
+         //外半径和内半径
+         
+         var outerRadius=w*.12;
+        // var innerRadius=outerRadius*.6;
+         //创建弧生成器
+         var arc = d3.svg.arc()
+             //.innerRadius(innerRadius)
+             .outerRadius(outerRadius);
+         var color = d3.scale.category20();//有20种颜色的颜色比例尺
+         //添加对应数目的弧组，即<g>元素
+         arcs=svg2.selectAll("g")
+                     .data(piedata)//绑定转换后数据
+                     .enter()
+                     .append("g")
+                     .attr("transform","translate("+width/2+","+height/2+")");
+         //对每个g元素添加路径元素
+         arcs.append("path")//每个g元素都追加一个path元素用绑定到这个g的数据d生成路径信息
+         .attr("fill", function(d,i){return "rgb("+(230-i*11.5)+",89,131)";})
+         .attr("d",function(d){
+                     return arc(d);//使用弧生成器将角度转为弧度（d3使用弧度绘制）
+                 })
+         .on('mouseover',function(d,i){
+         	rect_show_text(i);
+         	d3.select(this)
+         	.attr("fill", "#0441a0");	
+         	svg2.append("text")
+         	.attr("id","info")
+         	.attr("x",width/2)
+         	.attr("y",height/2)
+         	.attr("text-anchor","middle")
+         	.attr("font-size",36)
+         	.text(d.data[0]);
+         	svg2.append("text")
+         	.attr("id","value")
+         	.attr("x",width/2)
+         	.attr("y",height/2+25)
+         	.attr("text-anchor","middle")
+         	.attr("font-size",20)
+         	.text(((d.value*100)+"").substring(0,4)+"%");
+         })
+         .on('mouseout',function(d,i){
+         	rect_hidden_text(i);
+         	d3.select(this)
+         	.attr("fill","rgb("+(230-i*11.5)+",89,131)");	
+         	d3.select("#info")
+         	.remove();
+         	d3.select("#value")
+         	.remove();
+         })
+             .transition()					//设置动画
+             .ease('bounce')					//动画效果
+             .duration(2000)					//持续时间
+             .attrTween('d',tweenPie)		//两个属性之间平滑的过渡。
+             .transition()
+             .ease("elastic")
+             .delay(function(d,i){return 2000+i*50})	//设置了一个延迟时间，让每一个内半径不在同一个时间缩小。
+             .duration(750)
+             .attrTween('d',tweenDonut);
+             function tweenPie(b){
+                 //这里将每一个的弧的开始角度和结束角度都设置成了0
+                 //然后向他们原始的角度(b)开始过渡，完成动画。
+                 b.innerRadius=0;	
+                 var i=d3.interpolate({startAngle:0,endAngle:0},b);
+                 //下面的函数就是过渡函数，他是执行多次最终达到想要的状态。
+                 return function(t){return arc(i(t));};
+             }
+
+             function tweenDonut(b){
+                 //设置内半径不为0
+                 b.innerRadius=outerRadius*.6;
+                 //然后内半径由0开始过渡
+                 var i=d3.interpolate({innerRadius:0},b);
+                 return function(t){return arc(i(t));};
+             }
+
+
+              // var label=svg.selectAll('.label')      //添加右上角的标签
+              //        .data(piedata)
+              //        .enter()
+              //        .append('g')
+              //        .attr("transform","translate("+(width-50)+","+10+")")
+              //        ;   
+              //    label.append('rect')        //标签中的矩形
+              //        .style('fill',function(d,i){
+              //            return color(i);
+              //        })
+              //        .attr('x',function(d,i){
+              //            return 0;
+              //        })
+              //        .attr("y",function(d,i){
+              //            return 10+i*30;
+              //        })
+              //        .attr('rx','5')     //rx=ry 会出现圆角
+              //        .attr('ry','5')
+              //        .attr('width',50)
+              //        .attr('height',20)
+              //        ;
+                 // label.append('text')            //标签中的文字
+                 //     .attr('x',function(d,i){
+                 //         return 25;              //因为rect宽度是50，所以把文字偏移25,在后面再将文字设置居中
+                 //     })
+                 //     .attr("y",function(d,i){        
+                 //         return 15+10+i*30;
+                 //     })
+                 //     .text(function(d){
+                 //         return d.data[0];
+                 //     })
+                 //     .style({
+                 //         "font-size":"10px",
+                 //         "text-anchor":"middle",
+                 //         'fill':"white",
+                 //         "font-weight":600
+                 //     })
+         //为组中每个元素添加文本
+         // arcs.append("text").transition(100)
+         //    .delay(2000)//每个g元素都追加一个path元素用绑定到这个g的数据d生成路径信息
+         //     .attr("transform",function(d){ 
+         //        console.log(d)
+         //        console.log(arc.centroid(d))
+         //         return "translate("+arc.centroid(d)[0]+","+arc.centroid(d)[1]+")";//计算每个弧形的中心点（几何中心）
+         //     })
+         //     .attr("text-anchor","middle")
+         //     .attr("font-size",12)
+         //     .text(function(d){
+         //         return d.value;//这里已经转为对象了
+         //     });
+
+
+         
+     </script>
+ </body>
+
+ </html>

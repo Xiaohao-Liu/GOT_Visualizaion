@@ -1,0 +1,141 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>GOT MAP</title>
+    <script type="text/javascript" src="http://cuc.yingshinet.com/d3.v3.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/topojson.v1.min.js"></script>
+    <style type="text/css">
+      *{margin:0px;padding:0px;}
+      @font-face{
+            font-family:Larissa;
+            src:url('./sources/larissa.ttf');
+      }
+      #places{
+        position:absolute;
+        top:0px;
+        left:0px;
+        height:100%;
+        width:100%;
+        overflow: hidden;
+      }
+      .place{
+        position:absolute;
+        height:20px;
+        width:20px;
+        border-radius: 30px;
+        background-image: url(./sources/location.svg);
+        background-size: cover;
+        transform: translate(-10px, -24px);
+        transition: ease .5s;
+        cursor:pointer;
+      }
+      .place-name{
+        position: absolute;
+        height: 30px;
+        width: 200px;
+        top: 15px;
+        text-align: center;
+        line-height: 30px;
+        left: -85px;
+        font-size: 16px;
+        color: #1d324e;
+        text-shadow: 0px 1px 0px #fff;
+        font-family: Larissa;
+        font-weight: bold;
+      }
+    </style>
+    
+  </head>
+  <body>
+  <div style="
+    height: 380px;
+    width: 40%;
+    padding: 20px;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    color: white;
+    font-family: Larissa;
+">
+      <p style="
+    font-size: 40px;
+">Map</p>
+
+      <p style="
+    font-size: 20px;
+">Game of Thrones</p>
+
+      <p style="
+    font-size: 40px;
+    font-family: sans-serif;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px #000;
+">HBO</p>
+
+      <div style="
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    width: 200px;
+    text-align: center;
+    background-size: 30px;
+    background-image: url(sources/award.svg);
+    background-repeat: no-repeat;
+    background-position: 39px 15px;
+    color: black;
+">
+
+          <p style="
+    font-size: 20px;
+    font-family: sans-serif;
+    height: 40px;
+    line-height: 40px;
+    text-shadow: 1px 1px #404040;
+    color: black;
+">Awards</p>
+          <p style="
+    font-size: 20px;
+">Primetime Emmy Awards</p>
+          <p style="
+    font-size: 20px;
+">Golden Globe Awards</p><p style="
+    font-size: 20px;
+">Saturn Awards</p>
+          <p style="
+    font-size: 20px;
+">Screen Actors Guild Awards</p>
+          <p style="
+    font-size: 20px;
+">People's Choice Award</p><p style="
+    font-size: 20px;
+">BAFTA Awards</p>
+      </div>
+
+
+
+  </div>
+   <!--  <div
+        style="position:absolute;bottom:0px;left:100px;font-size:20px;width: 250px;height: 200px;color:black;float:left;">
+        <div style="position:absolute;top:50px;left:100px;font-size:20px;color:white;">数据可视化</div>
+        <div style="position:absolute;top:75px;left:100px;font-size:12px;font-family: Larissa;">DataVisulization</div>
+        <div style="position:absolute;top:100px;left:100px;font-size:14px;color:white;">蒋汶娟 刘晓豪</div>
+        <div style="position:absolute;top:120px;left:100px;font-size:10px;font-family: Larissa;">JiangWenjuan LiuXiaohao</div>
+        <div style="position:absolute;top: 150px;left:100px;font-size:14px;color:white;width: 340px;">
+          2017级计算机科学与技术（大数据技术与应用方向）</div>
+        <div style="position:absolute;top: 170px;left:100px;font-size:10px;width: 300px;font-family: Larissa;">2017 Computer
+          Science &amp; Technology</div>
+        <div
+          style="position:absolute;top: 48px;left: -80px;font-size: 30px;color:white;font-weight: bold;width: 100px;">
+          Game Of Thrones' Map</div>
+      </div> -->
+
+      <div id="title-logo" style="position:absolute;top: 0px;right: 10px;font-size:20px;width: 350px;height: 50px;color:#999;overflow: hidden;z-index:2;box-shadow: 0px 2px 5px -3px #000;background:white;">
+        <div style="background:url('./sources/map.svg');height:30px;width:30px;background-size:cover;border-radius:50px;position:absolute;top:10px;left:10px;"></div>
+        <div style="position:absolute;top:10px;left:calc((100% - 200px) /2);height:30px;width:200px;line-height:20px;font-size:16px;">权力的游戏地图</div>
+        <a href=" " style="text-decoration:none;position:absolute;top:35px;left:calc((100% - 200px) /2);height:20px;width:200px;line-height:5px;font-size:10px;color:#aaa;">The Game Of Throne' Map</a >
+      </div>
+
+    <script type="text/javascript" src="gotMap.js"></script>
+  </body>
+</html>

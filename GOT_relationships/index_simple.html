@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>GOT Force</title>
+	<style type="text/css">
+		*{margin:0;padding:0;}
+		.forceCircle{
+			position: absolute;
+		    background-size: cover;
+		    background-position: center;
+		    background-repeat: no-repeat;
+		    border-radius: 100px;
+		    box-shadow: 0px 2px 5px -2px;
+		    z-index: 0;
+		   text-align:center;
+		    transform: translate(-50%, -50%);
+		    cursor:pointer;
+		}
+		#info{
+			transition:ease .5s;
+			position:absolute;
+			height:300px;
+			width:300px;
+			top:20px;
+			left:20px;
+			transform: translate(5px, -30px);
+			z-index:0;
+			opacity:0;
+		}
+		#info #info-b{
+			position:absolute;
+			top:30px;
+			left:55px;
+			height:150px;
+			width:150px;
+			border-radius:100px;
+			background:#EEE;
+			box-shadow: 0px 2px 5px -2px #000;
+			/*border-left:10px solid #bbb;*/
+			line-height:60px;
+			text-indent:10px;
+			background-size:cover;
+			background-position:top;
+			overflow: hidden;
+
+		}
+		#bg:before{
+		    content:"";
+			height:calc(120%);
+			width:calc(120%);
+			position:fixed;
+			top:-10%;
+			left:-10%;
+			background-image:url(bg.jpg);
+			background-size:cover;
+			background-position: center;
+			z-index:-1;
+			filter:blur(20px);
+			background-attachment: unset;
+			overflow: hidden;
+		}
+		#info:before{
+		    content:"";
+		    position:absolute;
+			top:0;
+			left:20px;
+			height:100%;
+			width:200px;
+			border-radius:10px;
+			background:rgba(0, 0, 0, 0.65);
+			box-shadow: 0px 2px 5px -2px #000;
+			/*border-left:10px solid #bbb;*/
+			line-height:60px;
+			text-indent:10px;
+			padding-right:20px;
+			background-size:cover;
+			background-position:top;
+			overflow: hidden;
+		}
+		#info #name{
+			position: absolute;
+			bottom:10px;
+			left:20px;
+			height:30px;
+			line-height: 30px;
+			background-color: rgba(0,0,0,0.75);
+		    padding: 5px 20px;
+		    text-align: center;
+		    color: white;
+		    font-weight: bold;
+		}
+		#info #arrow_{
+			position:absolute;
+			top:20px;
+			left:-15px;
+			border-right: 18px solid rgba(0,0,0,0.8);
+			border-left:18px solid transparent;
+			border-top:10px solid transparent;
+			border-bottom:10px solid transparent;
+			z-index:-1;
+		}
+		#info #family-board{
+		    position:absolute;
+			top:0;
+			left:250px;
+			height:100%;
+			width:140px;
+			border-radius:10px;
+			background:rgba(0, 0, 0, 0.65);
+			box-shadow: 0px 2px 5px -2px #000;
+			/*border-left:10px solid #bbb;*/
+			line-height:60px;
+			text-indent:10px;
+			background-size:cover;
+			background-position:top;
+			overflow: hidden;
+		}
+		#info #info-more{
+			height: calc(100% - 20px);
+		    background: white;
+		    position: absolute;
+		    top: 0;
+		    left: 300px;
+		    padding: 10px;
+		    padding-left: 30px;
+		    border-radius: 10px;
+		    box-shadow: 0px 2px 5px -2px #000;
+		    z-index: -1;
+		}
+		#info-more p{
+			line-height: 40px;
+		}
+		#bg{
+		 /*   transition:ease .5s;*/
+			/*height:calc(100% + 20px);*/
+			/*width:calc(100% + 20px);*/
+			position:fixed;
+			/*top:-10px;*/
+			/*left:-10px;*/
+			/*background-image:url(bg.jpg);*/
+			/*background-size:cover;*/
+			/*background-position: center;*/
+			z-index:-1;
+			/*overflow: hidden;*/
+		}
+		.relation-icon{
+			height:20px;
+			width:20px;
+			/*background-color:white;*/
+			background-size:18px 18px;
+			background-repeat: no-repeat;
+			background-position:center;
+			position: absolute;
+			cursor:pointer;
+		}
+
+		#title-logo:after{
+			content:"";
+			position: absolute;
+			height:100%;
+			width: 100%;
+			background-color:#000;
+			opacity: 1;
+			z-index: -1;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="GOT.css">
+</head>
+<body>
+	<div id="bg"></div>
+	<script type="text/javascript" src="http://cuc.yingshinet.com/d3.v3.min.js"></script>
+	<script type="text/javascript" src="charactors.js"></script>
+	<script type="text/javascript" src="relation.js"></script>
+	<script type="text/javascript" src="force.js"></script>
+</body>
+</html>

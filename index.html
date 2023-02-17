@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>GOT Force</title>
+	<link rel="stylesheet" type="text/css" href="GOT_relationships/GOT.css">
+	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+	<script type="text/javascript" src="http://cuc.yingshinet.com/d3.v3.min.js"></script>
+
+	<style type="text/css">
+		@font-face {
+			font-family: googlesans;
+			src: url('GoogleSans-Regular.ttf');
+		}
+
+		@font-face {
+			font-family: underneath;
+			src: url('underneath.ttf');
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			font-family: googlesans;
+		}
+
+		.forceCircle {
+			position: absolute;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			border-radius: 100px;
+			box-shadow: 0px 2px 5px -2px;
+			z-index: 0;
+			text-align: center;
+			transform: translate(-50%, -50%);
+			cursor: pointer;
+		}
+
+		#info {
+			transition: ease .5s;
+			position: absolute;
+			height: 300px;
+			width: 300px;
+			top: 20px;
+			left: 20px;
+			transform: translate(5px, -30px);
+			z-index: 0;
+			opacity: 0;
+		}
+
+		#info #info-b {
+			position: absolute;
+			top: 30px;
+			left: 55px;
+			height: 150px;
+			width: 150px;
+			border-radius: 100px;
+			background: #EEE;
+			box-shadow: 0px 2px 5px -2px #000;
+			/*border-left:10px solid #bbb;*/
+			line-height: 60px;
+			text-indent: 10px;
+			background-size: cover;
+			background-position: top;
+			overflow: hidden;
+
+		}
+
+		#bg:before {
+			content: "";
+			height: calc(120%);
+			width: calc(120%);
+			position: fixed;
+			top: -10%;
+			left: -10%;
+			background-image: url(bg.jpg);
+			background-size: cover;
+			background-position: center;
+			z-index: -1;
+			filter: blur(20px);
+			background-attachment: unset;
+			overflow: hidden;
+		}
+
+		#info:before {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 20px;
+			height: 100%;
+			width: 200px;
+			border-radius: 10px;
+			background: rgba(0, 0, 0, 0.65);
+			box-shadow: 0px 2px 5px -2px #000;
+			/*border-left:10px solid #bbb;*/
+			line-height: 60px;
+			text-indent: 10px;
+			padding-right: 20px;
+			background-size: cover;
+			background-position: top;
+			overflow: hidden;
+		}
+
+		#info #name {
+			position: absolute;
+			bottom: 10px;
+			left: 20px;
+			height: 30px;
+			line-height: 30px;
+			background-color: rgba(0, 0, 0, 0.75);
+			padding: 5px 20px;
+			text-align: center;
+			color: white;
+			font-weight: bold;
+		}
+
+		#info #arrow_ {
+			position: absolute;
+			top: 20px;
+			left: -15px;
+			border-right: 18px solid rgba(0, 0, 0, 0.8);
+			border-left: 18px solid transparent;
+			border-top: 10px solid transparent;
+			border-bottom: 10px solid transparent;
+			z-index: -1;
+		}
+
+		#info #family-board {
+			position: absolute;
+			top: 0;
+			left: 250px;
+			height: 100%;
+			width: 140px;
+			border-radius: 10px;
+			background: rgba(0, 0, 0, 0.65);
+			box-shadow: 0px 2px 5px -2px #000;
+			/*border-left:10px solid #bbb;*/
+			line-height: 60px;
+			text-indent: 10px;
+			background-size: cover;
+			background-position: top;
+			overflow: hidden;
+		}
+
+		#info #info-more {
+			height: calc(100% - 20px);
+			background: white;
+			position: absolute;
+			top: 0;
+			left: 300px;
+			padding: 10px;
+			padding-left: 30px;
+			border-radius: 10px;
+			box-shadow: 0px 2px 5px -2px #000;
+			z-index: -1;
+		}
+
+		#info-more p {
+			line-height: 40px;
+		}
+
+		#bg {
+			/*   transition:ease .5s;*/
+			/*height:calc(100% + 20px);*/
+			/*width:calc(100% + 20px);*/
+			position: fixed;
+			/*top:-10px;*/
+			/*left:-10px;*/
+			/*background-image:url(bg.jpg);*/
+			/*background-size:cover;*/
+			/*background-position: center;*/
+			z-index: -1;
+			/*overflow: hidden;*/
+		}
+
+		.relation-icon {
+			height: 20px;
+			width: 20px;
+			/*background-color:white;*/
+			background-size: 18px 18px;
+			background-repeat: no-repeat;
+			background-position: center;
+			position: absolute;
+			cursor: pointer;
+		}
+
+		#title-logo:after {
+			content: "";
+			position: absolute;
+			height: 100%;
+			width: 100%;
+			background-color: #000;
+			opacity: 1;
+			z-index: -1;
+		}
+	</style>
+	<style type="text/css">
+		#big_board {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+			overflow-y: scroll;
+			min-width: 1200px;
+		}
+
+		.b {
+			position: relative;
+			height: 500px;
+			width: 80%;
+			margin: auto;
+			margin-bottom: 20px;
+			background: white;
+			border-radius: 5px;
+			border: 0px;
+			box-shadow: 0px 1px 5px -3px;
+			overflow: hidden;
+		}
+
+		.b p {
+			margin-top: -10px;
+			font-size: 10px;
+			
+		}
+		.b div p {
+			margin-top: 10px;
+			font-size: 15px;
+			text-align: justify;
+		}
+
+		#top_b:before {
+			content: "";
+			position: absolute;
+			height: 120%;
+			width: 120%;
+			top: -10%;
+			left: -10%;
+			filter: blur(10px);
+			background: url(slid_pics/Arya.jpg);
+			background-size: cover;
+			background-position: center;
+		}
+
+		#top_b .title1 {
+			position: relative;
+			height: 100px;
+			top: 300px;
+			margin-right: 0px;
+			line-height: 100px;
+			color: white;
+			background: rgba(0, 0, 0, .75);
+			padding: 40px 20px;
+			font-size: 40px;
+			font-weight: 100;
+		}
+
+		#family_b {
+			height: 300px;
+		}
+
+		#family_b ul {
+			list-style: none;
+		}
+
+		#family_b ul li {
+			float: left;
+			height: 280px;
+			width: 140px;
+			margin: 10px;
+			left: 80px;
+			border-radius: 5px;
+			background-image: url(GOT_relationships/familys/Stark.jpg);
+			background-size: cover;
+			background-position: center;
+		}
+
+		#info1 {
+			width: 280px;
+			float: right;
+			font-size: 14px;
+			text-indent: 20px;
+			padding: 20px 10px;
+			color: white;
+		}
+
+		.frame_control {
+			transition: ease .5s;
+			position: absolute;
+			left: 0px;
+			top: 0px;
+			background: #EEE;
+			height: 100%;
+			width: calc(100%);
+			line-height: 600px;
+			text-align: center;
+			font-size: 40px;
+			z-index: 2;
+			cursor: pointer;
+		}
+
+		.frame_control:hover {
+			background: #f36c6c;
+		}
+
+		.footer-b {
+			height: 250px;
+			width: 80%;
+			background: #1e1c1b;
+			padding: 50px 10%;
+		}
+
+		.pic_board {
+			height: 100%;
+			width: 90%;
+			margin-left: 10%;
+			position: relative;
+		}
+
+		#hint_slid {
+			height: 100%;
+			width: 10%;
+			float: left;
+		}
+
+		ul {
+			list-style: none;
+			height: 100%;
+			width: 100%;
+		}
+
+		.pic_board li {
+			transition: cubic-bezier(0, 0.19, 0.25, 1) .5s;
+			height: 80%;
+			width: 80%;
+			background: green;
+			border-radius: 10px;
+			box-shadow: 0px 0px 20px -5px;
+			background-size: cover;
+			background-position: center;
+			background-image: url(slid_pics/Arya.jpg);
+			position: absolute;
+			cursor:pointer;
+		}
+		.line{
+			height:0px;
+			border-top:1px solid #bbb;
+			margin-top:40px;
+		}
+		.from{
+			height:10px;
+			float:right;
+			margin-bottom:5px;
+			font-size:10px;
+			margin-top:10px;
+			position: relative;
+
+		}
+
+		.from a{
+			text-decoration: none;
+			color:#aaa;
+		}
+		.from a:hover{
+			color:dodgerblue;
+		}
+		.from:before{
+			content: "";
+			position: absolute;
+			top: 5px;
+			left: -13px;
+			text-decoration: underline;
+			height: 2px;
+			width: 10px;
+			background: #aaa;
+		}
+		.back-to-top {
+		  /*display: none;  /*默认是隐藏的，这样在第一屏才不显示 */
+		  position: fixed; /* 位置是固定的 */
+		  bottom: 60px; /* 显示在页面底部 */
+		  right: 30px; /* 显示在页面的右边 */
+		  z-index: 99; /* 确保不被其他功能覆盖 */
+		  /*border: 1px solid #5cb85c;  显示边框 */
+		  /*outline: none; /* 不显示外框 */
+		  /*background-color: #fff; /* 设置背景背景颜色 */
+		  /*color: #5cb85c; /* 设置文本颜色 */
+		  cursor: pointer; /* 鼠标移到按钮上显示手型 */
+		  /*padding: 10px 15px 15px 15px; /* 增加一些内边距 */
+		  /*border-radius: 10px; /* 增加圆角 */
+		}
+
+		.back-to-top:hover {
+		  /*background-color: #5cb85c; /* 鼠标移上去时，反转颜色 */
+		  color: rgb(102, 102, 102);;
+		}
+		.back-to-bottom{
+			position: fixed; /* 位置是固定的 */
+		  bottom: 15px; /* 显示在页面底部 */
+		  right: 30px; /* 显示在页面的右边 */
+			z-index: 99;
+			cursor:pointer;
+		}
+		.back-to-bottom:hover {
+		  color: rgb(102, 102, 102);;
+		}
+		.fa-3x {
+			font-size: 2em;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="bg"></div>
+	<!-- <div id="nodes-b">-->
+	<!--	<div id='info'><div id='info-b'><div id='name'></div></div><div id='arrow'></div></div>-->
+	<!--</div>-->
+	<div class="title" id="title" style="transition:ease .5s;box-shadow: 0px 1px 3px -1px #020202;overflow:hidden;">
+		<div class="loading" id="loading"></div>
+		<div class="title-left" id="title-left" style="transition:ease .5s;"></div>
+		<div class="title-right" style="transition:ease .5s;"></div>
+	</div>
+
+	<div id="big_board">
+		<div class="b" id="top_b" style="height:700px;margin-top:100%;border-radius:5px;z-index:2;">
+			<div style="
+				width: 300px;
+				position: absolute;
+				z-index: 2;
+				background: rgb(255, 255, 255);
+				right: 10px;
+				top: 60px;
+				padding: 10px 25px;
+				padding-bottom: 20px;
+				box-shadow: 0px 1px 10px -3px #000;
+				color: #000;
+				border-top: 10px solid white;
+			">
+				<p style="
+				font-size: 13px;
+			">《权力的游戏》整个故事主要发生在一块架空的大陆，其中总共有四个大陆，分别是维斯特洛大陆，厄索斯大陆，索斯罗斯大陆和亚厦以南一块未知的大陆乌尔特斯。</p>
+							<p style="
+				font-size: 13px;
+			">几块大陆被海分隔，在维斯特洛大陆和厄索斯大陆之间是相隔的是狭海，厄索斯大陆之上是颤抖海，维斯特洛大陆之下是夏日之海，而在索斯罗斯大陆和厄索斯大陆包围之中的是玉海。</p>
+							<p style="
+				font-size: 13px;
+			">大约在黎明之战两千年后，七大王国形成于维斯特洛大陆，《权力的游戏》主线在这片有着1万多年的历史的土地上展开。安达尔人挥舞着铁制兵器，骑着战马，带着对七神的信仰穿越狭海而来。&nbsp;他们在艾林谷登录，并且迅速击败了南部王国，但是他们并没能征服占有地利的北部王国。随后在维斯洛特大陆上出现了七个强大的王国：北部王国，铁岛王国，谷地王国，凯岩王国，风暴王国和冬恩王国。第七个王国，河湾王国，被其邻国反复征服，最终被完全摧毁。</p>
+				<div class="from" style="margin-top:40px;"><a><font style="color:white;background:black;">Description</font></a></div>
+			</div>
+		  <iframe
+				style="background:#EEE;height:100%;width:100%;border:0px;float:left;border-radius:5px;position:relative;z-index:1;"
+				src="./GOT_MAP/index.html"></iframe>
+		  
+		</div>
+		<div class="b"  style="height:400px;margin-top:50px;border-radius:5px;z-index:2;box-shadow: 0px 0px;">
+			<div style="background:white;height:100%;width:calc(50% - 10px);float:left;border:0px;float:left;border-radius:5px;position:relative;z-index:1;">
+				<p><font style="color:white;background:black;">《权力的游戏》</font>（Game of
+					Thrones），是美国HBO电视网制作推出的一部中世纪史诗奇幻题材的电视剧。该剧改编自美国作家乔治·R·R·马丁的奇幻小说《冰与火之歌》系列。由戴维·贝尼奥夫、D·B·威斯、艾伦·泰勒等人执导，大卫·贝尼奥夫和D·B·威斯编剧，乔治·马丁担任剧本顾问，彼特·丁拉基、琳娜·海蒂、艾米莉亚·克拉克、基特·哈灵顿等人主演
+					。</p>
+				<p>2015年，第67届艾美奖中《权力的游戏》破纪录斩获12项大奖，包揽了最佳剧情、导演、编剧、男配等大奖 。</p><p>2016年，被选为2016美国电影学会十佳剧集 。</p><p>2018年，获得第70届艾美奖最佳剧集奖 。</p>
+				<p><font style="color:white;background:black;">《权力的游戏》最终季(第八季)</font>将在美国时间2019年4月14日回归，5月19日完结。</p>
+				<div class="from"><a href="http://www.baidu.com" target="_blank">Baidu Baike</a></div>
+				<div class="line"></div>
+				<p style="margin-top: 35px;">
+					右图☞为权力的游戏各季豆瓣、IMDb和烂番茄上的评分。权力的游戏前七季均获得好评。
+				</p>
+			</div>
+			<iframe
+					style="background:white;height:calc(100% - 5px);width:50%;float:left;border:1px solid #eee;float:right;border-radius:5px;position:relative;z-index:1;"
+					src="./ranks/index.html"></iframe>
+
+		</div>
+		<div class="b" style="margin-top:50px;height:340px;border-radius:0px;box-shadow:0px 0px 0px;">
+		  <iframe
+				style="background:white;height:200px;width:100%;border:0px;float:left;position:relative;z-index:1;"
+				src="./audio/index.html"></iframe>
+		  <div>
+			  <p style="padding: 0px 50px;">长夜将至，我从今开始守望，至死方休。
+
+				  我将不娶妻，不封地，不生子。
+
+				  我将不戴宝冠，不争荣宠。
+
+				  我将尽忠职守，生死于斯。
+
+				  我是黑暗中的利剑，长城上的守卫，抵御寒冷的烈焰，破晓时分的光线，唤醒眠者的号角，守护王国的坚盾。
+
+				  我将生命与荣耀献给守夜人，今夜如此，夜夜皆然。</p>
+			  <p style="font-size:10px;color:#999;padding: 0px 50px;">Night gathers, and now my watch begins. It shall not end until my death. I shall take no wife, hold no lands, father no children. I shall wear no crowns and win no glory. I shall live and die at my post. I am the sword in the darkness. I am the watcher on the walls. I am the fire that burns against the cold, the light that wakes the sleepers, the shield that guards the realms of men. I pledge my life and honor to the Night's Watch, for this night, and all the nights to come.</p>
+
+			  <div class="from"><a><font style="color:white;background:black;">守夜人誓词</font></a></div>
+			  <div class="line"></div>
+		  </div>
+
+		</div>
+
+		<div class="b" style="height:40px;text-align:center;font-size:25px;line-height:30px;box-shadow:0px 0px;">杀戮榜
+			<p>Killing List</p>
+		</div>
+
+		<script type="text/javascript" src="js/d3.layout.cloud.js"></script>
+		<script type="text/javascript" src="js/wc.js"></script>
+
+
+		<div class="b" style="height:100px;box-shadow:0px 0px;">
+			<div>
+				<p style="">
+					<font style="color:white;background:black;">Valar Morghulis.Valar Dohaeris.</font> 凡人皆有一死，凡人皆需侍奉。
+					</p>
+				<p style="font-size:10px;color:#999;">《权力的游戏》中没有主角，除了历史本身。“固守者已经逝去，变革者荣耀归来”正是这部美剧中各个人物命运的真实写照。权力之争中谁才是真正的杀手？</p>
+
+<!--				<div class="from"><a><font style="color:white;background:black;">守夜人誓词</font></a></div>-->
+				<div class="line" style="margin-top:30px;"></div>
+			</div>
+		</div>
+		
+		<div class="b" style="height:40px;text-align:center;font-size:25px;line-height:30px;box-shadow:0px 0px;">家族主要人物人数
+			<p>Number of 13 families</p>
+		</div>
+		<div class="b" style="margin-top:50px;height:342px;border-radius:0px;box-shadow:0px 0px 0px;">
+				<iframe
+					style="background:black;height:340px;width:60%;border:0px solid #d4d4d4;float:left;box-shadow:2px 0px 10px -5px #000;border-bottom-left-radius:10px;border-top-left-radius:10px;position:relative;z-index:1;"
+					src="./Pie_chart/pie_3d.html"></iframe>
+					<div style="width:calc(40% - 20px);float:right;height:330px;margin-left:-10px;margin-top:5px;border-radius:5px;border:1px solid #aaa;background-color: #fffedc;padding:0px 10px;padding-left:15px;">
+							<p style=""><font style="color:white;background:black;">When you play the game of thrones, you win or you die. There is no middle ground.</font></p>
+							<p style="font-size:10px;color:#999;">《权力的游戏》是为HBO而生的剧集：奢华、血腥、黑暗、古怪，有时甚至是令人惊奇地甘美。恶意和善意交织，就像人生一样不可预测。斗争是永恒的，平静只是相对的。</p>
+<p style="font-size:10px;color:#999;">史塔克：Winter is Coming</p>
+<p style="font-size:10px;color:#999;">兰尼斯特：Hear Me Roar</p>
+<p style="font-size:10px;color:#999;">拜拉席恩：Ours is the Fury</p>
+<p style="font-size:10px;color:#999;">艾林：As High as Honor</p>
+<p style="font-size:10px;color:#999;">马泰尔：Unbowed, Unbent,Unbroken</p>
+<p style="font-size:10px;color:#999;">徒利：Family, Duty, Honor</p>
+<p style="font-size:10px;color:#999;">葛雷乔伊：We Do Not Sow</p>
+<p style="font-size:10px;color:#999;">提利尔：Growing Strong</p>
+<p style="font-size:10px;color:#999;">坦格利安：Fire and Blood</p>
+			
+							<div class="from"><a><font style="color:white;background:black;">九大家族</font></a></div>
+							<div class="line"></div>
+						</div>
+		</div>
+		<div class="b" style="height:40px;text-align:center;font-size:25px;line-height:30px;box-shadow:0px 0px;">人物关系
+			<p>Charactors Relationship</p>
+		</div>
+		<!--<div class="b" id="family_b" style="transition:ease .5s;">-->
+		<!--  <ul>-->
+		<!--    <li></li>-->
+		<!--    <li></li>-->
+		<!--    <li></li>-->
+		<!--    <li></li>-->
+		<!--    <li></li>-->
+		<!--    <li></li>-->
+		<!--    <li></li>-->
+		<!--    <li></li>-->
+		<!--    <li></li>-->
+		<!--  </ul>-->
+		<!--</div>-->
+		<div class="b" style="height:600px;background:#696969;">
+			<div class="frame_control" id="force_control">打开/关闭<font style="color:white;background:black;">力导向图</font>
+			</div>
+			<iframe id="force"
+				style="background:#EEE;height:100%;width:calc(100%);border:0px;float:left;border-radius:5px;box-shadow: 1px 0px 5px -3px;position:relative;z-index:1;"
+				src=""></iframe>
+		</div>
+
+
+<!--		<div class="b" style="height:40px;text-align:center;font-size:25px;line-height:30px;box-shadow:0px 0px;">各家族人数-->
+<!--			<p>Family Size</p>-->
+<!--		</div>-->
+<!--		<div class="b" style="height:600px;background:#EEE;">-->
+<!--			<iframe id="force"-->
+<!--				style="background:#EEE;height:100%;width:calc(100%);border:0px;float:left;border-radius:5px;box-shadow: 1px 0px 5px -3px;position:relative;z-index:1;"-->
+<!--				src="Histogram/FamilySize.html"></iframe>-->
+<!--		</div>-->
+
+
+		<div class="b" style="height:40px;text-align:center;font-size:25px;line-height:30px;box-shadow:0px 0px;">图片展示
+			<p>Pics show</p>
+		</div>
+		<div class="b" style="height:600px;box-shadow:0px 0px;overflow:hidden;">
+			<div id="hint_slid"></div>
+			<div class="pic_board" id="pic-board">
+				<ul>
+					<li style="background-image: url(slid_pics/NightKing.jpg);"></li>
+					<li style="background-image: url(slid_pics/rose.jpg);"></li>
+					<li style="background-image: url(slid_pics/Sansa.jpg);"></li>
+					<li style="background-image: url(slid_pics/Tyrion.jpg);"></li>
+					<li style="background-image: url(slid_pics/Melisandre.jpg);"></li>
+					<li style="background-image: url(slid_pics/Theon.jpg);"></li>
+					<li style="background-image: url(slid_pics/Robb.jpg);"></li>
+					<li style="background-image: url(slid_pics/Jon_Snow.jpg);"></li>
+					<li style="background-image: url(slid_pics/hug_Stark.jpg);"></li>
+					<li style="background-image: url(slid_pics/Bella.jpg);"></li>
+					<li style="background-image: url(slid_pics/Arya&Sansa.jpg);"></li>
+					<li style="background-image: url(slid_pics/Daenerys.jpg);"></li>
+					<li style="background-image: url(slid_pics/Arya.jpg);"></li>
+					<li style="background-image: url(slid_pics/All.jpg);"></li>
+				</ul>
+			</div>
+		</div>
+
+		<!--top&bottom图标-->
+		<i class="fa fa-chevron-circle-up fa-3x js-back-to-top back-to-top" aria-hidden="true" title="Top"></i>  
+		 <i class="fa fa-chevron-circle-down fa-3x js-back-to-bottom back-to-bottom" aria-hidden="true" title="Bottom"></i> 
+		<script src="https://cdn.staticfile.org/jquery/2.2.4/jquery.min.js"></script>
+		<script>
+		$('.back-to-top').click(function(){$('#big_board').animate({scrollTop: '0px'}, 800);return false;});
+// window.onscroll = function () {
+//     if (document.documentElement.scrollTop + document.body.scrollTop > 100) {
+//         document.getElementById(".back-to-top").style.display = "block";
+//     }
+//     else {
+//         document.getElementById(".back-to-top").style.display = "none";
+//     }
+// }
+$('.back-to-bottom').click(function(){$('#big_board').animate({scrollTop: '4000px'}, 800);return false;});
+		</script>
+
+		<div class="footer-b">
+			<div
+				style="position:relative;bottom:0px;right:0px;font-size:20px;width: 250px;height: 200px;color:black;float:left">
+				<div style="position:absolute;top:50px;left:100px;font-size:20px;color:white;">数据可视化</div>
+				<div style="position:absolute;top:75px;left:100px;font-size:12px;color:#999;">DataVisulization</div>
+				<div style="position:absolute;top:100px;left:100px;font-size:14px;color:white;">蒋汶娟 刘晓豪</div>
+				<div style="position:absolute;top:120px;left:100px;font-size:10px;color:#999;">JiangWenjuan LiuXiaohao</div>
+				<div style="position:absolute;top: 150px;left:100px;font-size:14px;color:white;width: 340px;">
+					2017级计算机科学与技术（大数据技术与应用方向）</div>
+				<div style="position:absolute;top: 170px;left:100px;font-size:10px;color:#999;width: 300px;">2017 Computer
+					Science &amp; Technology</div>
+				<div
+					style="position:absolute;top: 40px;left: -100px;font-size: 30px;color:white;font-weight: bold;width: 100px;">
+					Game Of Thrones' Analysis</div>
+			</div>
+			<div
+				style="position:relative;bottom:0px;left: 100px;font-size:20px;width: 250px;height: 200px;color:black;float:left;">
+				<div style="position:absolute;top: 55px;left:100px;font-size:12px;color:#999;">
+					<font style="font-size: 20px;height: 20px;display: block;padding-right: 6px;float: left;line-height: 22px;">©
+					</font> Dviz 2019
+				</div>
+				<div style="position:absolute;top: 85px;left:100px;font-size:12px;color:#999;width: 300px;">source: <a
+						href="https://github.com/jeffreylancaster/game-of-thrones" style="
+    color: white;
+"> github.com/jeffreylancaster/game-of-thrones
+					</a></div>
+			</div>
+
+			<div
+				style="position:relative;top: 40px;left: 100px;font-size:20px;width: 250px;height: 150px;color:black;float:right;background: rgba(255,255,255,.25);">
+				<div style="position:absolute;top: 10px;left: 10px;font-size: 16px;color: #d4d4d4;">页面检索</div>
+				<div style="position:absolute;top: 40px;left: 10px;font-size: 12px;color:#999;"><a
+						href="GOT_relationships/index.html" style="text-decoration: none;color: #999;">力导向图</a></div>
+				<div style="position:absolute;top: 60px;left: 10px;font-size: 12px;color:#999;"><a
+						href="GOT_MAP/index_big.html" style="text-decoration: none;color: #999;">Map</a></div>
+		 	  <div style="position:absolute;top: 80px;left: 10px;font-size: 12px;color:#999;"><a
+					href="GOT_relationships/Killing_List.html" style="text-decoration: none;color: #999;">杀戮榜</a></div>
+
+				<div style="position:absolute;top: 100px;left: 10px;font-size: 12px;color:#999;"><a
+					href="ranks/index_big.html" style="text-decoration: none;color: #999;">排行榜</a></div>
+			  </div>
+	</div>
+	</div>
+
+	<script type="text/javascript">
+
+		var top_ = document.getElementById("title");
+		var top_b = document.getElementById("top_b");
+		function transition_() {
+			document.getElementById("loading").style.display = "none";
+			top_.style.height = "50px"
+			document.getElementById("title-left").style.backgroundSize = "250px";
+			top_b.style.marginTop = "60px";
+			top_b.style.marginBottom = "-3px";
+			
+			setTimeout(function () {
+
+				top_.lastElementChild.style.width = "0px"
+				top_.lastElementChild.previousElementSibling.style.left = "20%"
+				top_b
+			}, 100)
+
+		}
+
+		(function smoothscroll() {
+			var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+			if (currentScroll > 0) {
+				window.requestAnimationFrame(smoothscroll);
+				window.scrollTo(0, currentScroll - (currentScroll / 5));
+			}
+		})();
+
+		// window.load = setTimeout(function(){transition_()}, 1000);
+
+		var force_flag = false;
+		var force_control = document.getElementById("force_control");
+		force_control.onclick = function () {
+			var force = document.getElementById("force");
+			if (!force_flag) {
+				force_control.style.top = "calc(100% - 50px)";
+				force_control.style.left = "0px";
+				force_control.style.width = "calc(100%)";
+				force_control.style.height = "50px";
+				force_control.style.lineHeight = "50px";
+				force_control.style.fontSize = "16px";
+				setTimeout(function () { force.src = "GOT_relationships/index_simple.html"; }, 500);
+				force_flag = true;
+			}
+			else {
+			force.src = "";
+				setTimeout(function () {
+				force_control.style.top = "0px";
+				force_control.style.left = "0px";
+				force_control.style.width = "calc(100%)";
+				force_control.style.height = "100%";
+				force_control.style.lineHeight = "600px";
+				force_control.style.fontSize = "40px";},500);
+				force_flag = false;
+			}
+		}
+
+		var pics = document.getElementById("pic-board").getElementsByTagName("li");
+		function init_pics() {
+			for (var i = 0; i < pics.length; i++) {
+				pics[i].style.top = "calc(10% + " + ((pics.length - i - 1) * 25) + "px)";
+				pics[i].style.height = "calc(80% - " + ((pics.length - i - 1) * 50) + "px)";
+				pics[i].style.width = "calc(80% - " + ((pics.length - i - 1) * 50) + "px)";
+				pics[i].style.left = "calc(10% - " + ((pics.length - i - 1) * 20) + "px)";
+				pics[i].style.opacity = (i + 1) / (pics.length);
+				if(i < pics.length - 5 - 1){
+				    pics[i].style.opacity = 0;
+				}
+				pics[i].setAttribute("param", i);
+				pics[i].onclick = function () {
+					var i = parseInt(this.getAttribute("param"));
+					for (var j = 0; j < pics.length; j++) {
+						pics[j].style.top = "calc(10% + " + ((i - j) * 25) + "px)";
+						pics[j].style.height = "calc(80% - " + ((i - j) * 50) + "px)";
+						pics[j].style.width = "calc(80% - " + ((i - j) * 50) + "px)";
+						pics[j].style.left = "calc(10% - " + ((i - j) * 20) + "px)";
+						pics[j].style.opacity = (j + 1) / (i + 1);
+                        if(j < i - 5){
+        				    pics[j].style.opacity = 0;
+        				}
+					}
+					
+					for (var j = i + 1; j < pics.length; j++) {
+						pics[j].style.left = "calc(80% - " + ((i - j) * 30) + "px)";
+					}
+				}
+			}
+
+		}
+
+
+
+
+
+		window.load = setTimeout(function () { transition_(); init_pics(); }, 1000);
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,125 @@
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>（平滑展开）饼状图</title>
+	</head>
+
+	<style>
+
+	</style>
+
+	<body>
+		<script src="../d3.v3.min.js" charset="utf-8"></script>
+		<script>
+			var width = 400;
+			var height = 400;
+			var dataset = [30, 10, 43, 55, 13];
+			
+			// dataset.sort(function(a,b){return b-a;});
+			var svg = d3.select("body")
+				.append("svg")
+				.attr("width", width)
+				.attr("height", height);
+
+			var pie = d3.layout.pie().sort(null);	//定义饼图的布局
+
+			var piedata = pie(dataset);	//将数据传给pie,就可以得到绘图的数据
+			var outerRadius = 150; //外半径
+			var innerRadius = 0; //内半径，为0则中间没有空白
+			var sum=0;
+			piedata.forEach(function(d,i){
+				d._endAngle=d.endAngle;
+				d.endAngle=d.startAngle;
+				d.duration=2000*(d.data/d3.sum(dataset));//动画时长2秒，计算每一个弧形所用动画时间
+				d.delaytime=sum;
+				sum+=d.duration;
+			})
+			var arc = d3.svg.arc() //弧生成器
+				.innerRadius(innerRadius) //设置内半径
+				.outerRadius(outerRadius); //设置外半径
+
+			var color = d3.scale.category10();
+			var arcs = svg.selectAll("g")		//先添加五个分组元素，用来存放一段弧的相关元素
+				.data(piedata)
+				.enter()
+				.append("g")
+				.attr("transform", function(d,i){
+					return "translate(" + (width / 2) + "," + (width / 2) + ")";
+				});
+
+			arcs.append("path")		//给每个分组元素g添加一个路径
+				.attr("fill", function(d, i) {
+					return color(i);
+				})
+				.attr("d", function(d, i) {
+					console.log(d);
+					return arc(d);		
+				})
+				.transition()
+				.duration(function(d,i){
+					return d.duration;
+				})
+				.ease("linear")
+				.delay(function(d,i){
+					return d.delaytime;
+				})
+				.attrTween("d", tweenArc(function(d, i) {
+					return {
+						startAngle: d.startAngle,	
+						endAngle: d._endAngle
+					};
+				}))
+				;	
+			 function tweenArc(b) {
+			 	return function(a, i) {
+			 		var d = b.call(this, a, i),
+			 			i = d3.interpolate(a, d);
+			 			//d保存转换之后的信息
+			 			//插值模式，从d.endAnle=d.startAngle到d.endAngle=d._endAngle转换
+			 		return function(t) {
+			 			return arc(i(t));
+			 		};
+			 	};
+             }
+             //添加文字
+             arcs.append("text")
+				.attr("transform", function(d) {
+					//arc.centroid计算出每个弧的中心位置
+					return "translate(" + arc.centroid(d) + ")";
+				})
+				.attr("text-anchor", "middle")
+				.text(function(d) {
+					return d.data;
+                })
+                //给饼图之间添加一些空隙
+                d3.selectAll("path").attr("transform",function(d,i){
+					var midAngle=(d.startAngle+d.endAngle)/2;
+					return "translate("+(1*Math.sin(midAngle))+","+(-1*Math.cos(midAngle))+")";
+                })
+                //添加鼠标移入移出事件,移动一点点，也可以实现移入的时候让它变大
+                arcs.select("path").
+                on("mouseover",function(d,i){
+					d3.select(this).transition()
+						.duration(500)
+						.ease("linear")
+						.attr("transform", function(d, i) {
+							var midAngle = (d.startAngle + d.endAngle) / 2;
+							return "translate(" + (20 * Math.sin(midAngle)) + "," + (-20 * Math.cos(midAngle)) + ")";
+						})
+				})
+				.on("mouseout",function(d,i){
+					d3.select(this).transition()
+						.duration(500)
+						.ease("linear")
+						.attr("transform", function(d, i) {
+							var midAngle=(d.startAngle+d.endAngle)/2;
+					return "translate("+(1*Math.sin(midAngle))+","+(-1*Math.cos(midAngle))+")";
+							return "translate(0)";
+						})
+				})
+		</script>
+
+	</body>
+
+</html>

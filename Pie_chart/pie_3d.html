@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>pie</title>
+    <style>
+
+        html{
+            overflow:hidden;
+        }
+        #canvas-frame {
+            position:absolute;
+            width: 100vw;
+            height: 100vh;
+        }
+        #interaction{
+            position:absolute;
+            z-index: 10;
+	        font-size: 30px;
+        }
+        * {
+			margin: 0;
+			padding: 0;
+		}
+    </style>
+</head>
+<body>
+    <div id="canvas-frame"></div>
+    <div id="interaction" style="transition:ease .5s;position:absolute;top: 10px;right: calc((100% - 350px)/2);font-size:20px;width: 350px;height: 75px;color:black;border-radius:10px;background:rgb(92, 92, 92);overflow: hidden;z-index:-1;box-shadow: 0px 2px 5px -3px #000;">
+            <div  style="background:url('logo.jpg');height:52px;width:52px;background-size:cover;border-radius:50px;position:absolute;top:10px;left:10px;"></div>
+            <div id="houseName" style="position:absolute;top:18px;left:calc((100% - 200px) /2);height:40px;width:200px;line-height:40px;font-size:20px;"><font style="color:white">Pie</font> Chart</div>
+    </div>
+    <div>
+	
+    <script src="./three.js" ></script>
+    <script src="./d3.v4.min.js"></script>
+    
+    <script src="./OrbitControls.js" ></script>
+    <script src="./objSelection.js"></script>
+   
+    <script type="text/javascript">
+    var data = [{'name':'Targaryen','length':12},
+                {'name':'Greyjoy','length':5},
+                {'name':'Lannister','length':10},
+                {'name':'Stark','length':22},
+                {'name':'Baratheon','length':10},
+                {'name':'Frey','length':7},
+                {'name':'Tully','length':5},
+                {'name':'Martell','length':8},
+                {'name':'Mormont','length':3},
+                {'name':'Arryn','length':1},
+                {'name':'Tyrell','length':4},
+                {'name':'Umber','length':1},
+                {'name':'Bolton','length':3}];
+        //var data = [{''name'': 'Drama', 'length': 25}, {''name'': 'Crime', 'length': 6}, {''name'': 'Thriller', 'length': 6}, {''name'': 'History', 'length': 5}, {''name'': 'Biography', 'length': 5}, {''name'': 'Adventure', 'length': 4}, {''name'': 'Comedy', 'length': 3}, {''name'': 'Romance', 'length': 3}, {''name'': 'War', 'length': 2}, {''name'': 'Action', 'length': 2}, {''name'': 'Western', 'length': 2}, {''name'': 'Fantasy', 'length': 1}, {''name'': 'Musical', 'length': 1}];
+        var color = d3.interpolate(d3.color('#FFB300'), d3.color('#444'));//d3颜色插值函数，渐变色
+
+        var threeDiv = document.getElementById( 'canvas-frame' );
+        var renderer = new THREE.WebGLRenderer( {antialias: true, alpha: true} );
+        renderer.setClearColor( 0xffffff, 0 );
+
+        var width = threeDiv.clientWidth;
+        var height = threeDiv.clientHeight;
+        renderer.setSize(width, height);
+        threeDiv.appendChild(renderer.domElement);
+
+        var scene = new THREE.Scene();
+
+        var group = new THREE.Object3D();
+        scene.add(group);
+
+        scene.userData.element = threeDiv;
+
+        var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
+        camera.position.x = 0;
+        camera.position.y = -100;
+        camera.position.z = 120;
+        camera.lookAt(group.position);
+        scene.add(camera);
+        scene.userData.camera = camera;
+
+        var light = new THREE.DirectionalLight(0xffffff, 1.0, 0);
+        light.position.set(15, 10, 50)
+        scene.add(light);
+
+        var aLight = new THREE.AmbientLight( 0xaaaaaa );
+        scene.add( aLight );
+
+    //     var orbitControls = new THREE.OrbitControls(scene.userData.camera, scene.userData.element);
+    //     orbitControls.target = group.position;//控制焦点
+    //     orbitControls.autoRotate = false;//自动旋转
+    //    scene.userData.controls = orbitControls;
+
+        initObject();
+        var object_selection;
+        ObjectSelection();
+        render();
+
+        function render()
+        {
+            //scene.userData.controls.update();
+            object_selection.render(group, scene.userData.camera);
+            renderer.render(scene, scene.userData.camera);
+            requestAnimationFrame(render);
+        }
+
+        function initObject(){
+            var options = {
+                depth: 10,//厚度
+                bevelThickness: 1,
+                bevelSize: 0.5,
+                bevelSegments: true,
+                bevelEnabled: 3,
+                curveSegments: 12,
+                steps: 1
+            };
+
+            //计算总值，以计算出角度比例
+            var sum = 0;
+            for(let i = 0; i<data.length; i++)
+                sum += data[i].length;
+            var startAngle = 0, endAngle = 0;
+
+            for(var i in data) {
+                endAngle += data[i].length/sum*Math.PI*2;
+
+                var material = new THREE.MeshPhongMaterial({
+                    color: color(((endAngle-startAngle)/Math.PI/1)*2),
+                    side: THREE.DoubleSide,
+                    wireframe: false,
+                });
+                var circle = drawShape(startAngle, endAngle-0.03);
+                startAngle = endAngle;
+
+                var geo = new THREE.ExtrudeGeometry(circle, options);
+
+                var mesh = new THREE.Mesh(geo, material);
+                mesh.rotation.x = -Math.PI/6;
+                // mesh.material.wireframe = true;
+                mesh.userData.length = data[i].length;
+                mesh.userData.name = data[i].name;
+                mesh.userData.ratio = (data[i].length/30*100).toFixed(2);
+
+                group.add(mesh);
+            }
+        }
+
+        function drawShape(startAngle, endAngle) {
+
+            var shape = new THREE.Shape();
+            shape.moveTo(0, 0);//当前位置
+            shape.lineTo(0, 0);
+            shape.moveTo(0, 0);
+            shape.arc(0, 0, 75, endAngle, startAngle, true);
+
+            return shape;
+        }
+
+        function ObjectSelection(){
+            object_selection = new THREE.ObjectSelection({//个人封装的js，three.js官方库中无
+                domElement: scene.userData.element,//渲染区域
+                selected: function(selectObj) {//selectObj为选取返回对象
+                  // 显示信息，此处为个性化处理，该函数会作为传入objsel.js中作为处理函数
+
+                },
+                clicked: function(selectObj) {//点击事件
+                    if(selectObj !== null) {
+
+                  } else {
+
+                  }
+                },
+                mousedown: function(selectObj) {//点击事件
+                    if(selectObj !== null) {//判断是否为空，objsel.js中有对应
+                        let mesh = selectObj.object;
+                        let point = selectObj.point;
+                        mesh.material.color = new THREE.Color("rgb(220,76,65)");
+                        mesh.material.shininess = 100;
+                        mesh.position.set(point.x/2, point.y/2, point.z/2);
+                        document.getElementById('houseName').innerHTML = "<font style='color:white;'>"+mesh.userData.name+" </font>"+parseInt(mesh.userData.ratio/3.6 + .5) +  "%";
+                        
+                  }
+                },
+                mouseup: function(selectObj) {//点击事件
+                    let mesh = selectObj.object;
+                    let point = selectObj.point;
+                    mesh.material.color = new THREE.Color('#ffc15e');
+                    mesh.material.shininess = 30;
+                    mesh.position.set(0, 0, 0);
+                }
+              });
+        }
+    </script>
+
+</body>
+</html>

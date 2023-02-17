@@ -1,0 +1,67 @@
+<html>
+<head>
+	<title>(Q弹特效)环状图</title>
+
+	<script type="text/javascript" src="../d3.v3.min.js"></script>
+</head>
+<body>
+
+	<script type="text/javascript">
+		var width=960,
+			height=500,
+			radius = Math.min(width, height) / 2 - 10;
+		var data=d3.range(10).map(Math.random).sort(d3.descending);//降序
+
+
+		var color=d3.scale.category20();
+
+		var arc=d3.svg.arc().outerRadius(radius);//定义了一个弧生辰器，外半径设置为radius
+
+		var pie=d3.layout.pie();				//定义一个饼图布局
+
+		var svg=d3.select('body').append('svg')
+				.attr('width',width)
+				.attr('height',height)
+				.append('g')
+				.attr('transform',"translate("+width/2+","+height/2+")");//添加一个svg,设置宽高，在偏移到中心。
+
+		var arcs=svg.selectAll('g.arc')
+				.data(pie(data))			//绑定数据
+				.enter().append('g')		//添加g
+				.attr('class',"arc");		//定义一个arc类
+
+		arcs.append('path')					//添加路径
+			.attr('fill',function(d,i){		//根据i的下标给每一个元素添加不同的颜色。
+				return color(i);
+			})
+			.transition()					//设置动画
+			.ease('bounce')					//动画效果
+			.duration(2000)					//持续时间
+			.attrTween('d',tweenPie)		//两个属性之间平滑的过渡。
+			.transition()
+			.ease("elastic")
+			.delay(function(d,i){return 2000+i*50})	//设置了一个延迟时间，让每一个内半径不在同一个时间缩小。
+			.duration(750)
+			.attrTween('d',tweenDonut);
+
+			function tweenPie(b){
+				//这里将每一个的弧的开始角度和结束角度都设置成了0
+				//然后向他们原始的角度(b)开始过渡，完成动画。
+				b.innerRadius=0;	
+				console.log(b)
+				var i=d3.interpolate({startAngle:0,endAngle:0},b);
+				//下面的函数就是过渡函数，他是执行多次最终达到想要的状态。
+				return function(t){return arc(i(t));};
+			}
+
+			function tweenDonut(b){
+				//设置内半径不为0
+				b.innerRadius=radius*.6;
+				//然后内半径由0开始过渡
+				var i=d3.interpolate({innerRadius:0},b);
+				return function(t){return arc(i(t));};
+			}
+
+	</script>
+</body>
+</html>

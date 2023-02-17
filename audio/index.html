@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>GOT audio</title>
+        <style>
+            @font-face {
+            font-family: disco; /*这里是说明调用来的字体名字*/
+            src: url("./DiscoDiva.ttf"); /*这里是字体文件路径*/
+            }
+        	#play{
+        		transition:ease .5s;
+        		position:absolute;
+        		top:0px;
+        		left:0px;
+        		height:calc(100% - 100px);
+        		width:100%;
+        		background:rgba(0,0,0,0);
+        		color:white;
+        		line-height:100px;
+        		font-size:20px;
+        		font-weight:bold;
+        		text-align:center;
+        		z-index:2;
+        		cursor:pointer;
+        	}
+        	#top_b{
+        		position:absolute;
+        		top:0px;
+        		left:0px;
+        		height:calc(100%);
+        		width:100%;
+        		overflow:hidden;	
+        	}
+
+            .front_text{
+                position:absolute;
+                top:calc((100% - 200px)/2);
+                left:25%;
+                height:100px;
+                width:50%;
+                line-height:110px;
+                text-align:center;
+                font-size:70px;
+                font-family: disco;
+                z-index:2;
+            }
+            #behind
+            {
+                color:black;
+            }
+            #front
+            {
+                color:rgba(0,0,0,.3);
+            }
+            #media{color:rgba(0,0,0,.3);}
+            #bottom
+            {
+                position: absolute;
+                top: calc((100% - 200px)/2 + 80px);
+                left: 25%;
+                height: 20px;
+                text-align: center;
+                width: 50%;
+                font-size: 11px;
+                z-index: 2;
+            }
+            #controls{
+                position:absolute;
+                bottom:25px;
+                height:50px;
+                width:50px;
+
+                border-radius:50px;
+                left:calc((100% - 50px)/2);
+                background-color: black;
+                transition: .5s;
+                cursor: pointer;
+                background-image:url(pics/play.svg);
+                background-size:25px;
+                background-position:center;
+                background-repeat: no-repeat;
+                -webkit-box-shadow: 0px 1px 10px -5px  #000;
+                -moz-box-shadow: 0px 1px 10px -5px #000;
+                box-shadow: 0px 1px 10px -5px #000;
+            }
+            #controls:hover{
+                background-color:#478eff;
+                -webkit-box-shadow: 0px 1px 13px -5px  #000;
+                -moz-box-shadow: 0px 1px 13px -5px #000;
+                box-shadow: 0px 1px 13px -5px #000;
+            }
+            .little_font{font-size:10px;}
+        </style>
+        <script type="text/javascript" src="http://cuc.yingshinet.com/d3.v3.min.js"></script>
+    </head>
+    <body>
+        
+        <audio id="GOTAudio" src="GOT.m4a"></audio>
+        <div id="behind" class="front_text">M<font class="little_font">ain</font>  T<font class="little_font">itle</font></div>
+        <div id="bottom">《权力的游戏》主题曲</div>
+        <div id="play" onclick="audio.play()"></div>
+        <div id="top_b"></div>
+        <div id="controls" onclick="controlMusic(this)" status="pause">
+
+        </div>
+        <script type="text/javascript" src="music.js"></script>
+    </body>
+</html>

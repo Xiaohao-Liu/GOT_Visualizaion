@@ -1,0 +1,145 @@
+<html>
+    <head>
+				<title>Killing List</title>
+				<style>
+					@font-face{
+					font-family:underneath;
+					src:url('../underneath.ttf');
+                }
+    
+				</style>
+    </head>
+    <body>
+            <div id="title-logo" style="position:absolute;top: 30px;right: 20px;font-size:20px;width: 350px;height: 75px;color:black;border-radius:10px;background:#a8a7a7;overflow: hidden;z-index:-1;box-shadow: 0px 2px 5px -3px #000;">
+                    <div style="background:url('logo.jpg');height:52px;width:52px;background-size:cover;border-radius:50px;position:absolute;top:10px;left:10px;"></div>
+                    <div style="position:absolute;top:10px;left:calc((100% - 200px) /2);height:40px;width:200px;line-height:40px;font-size:18px;">权力的游戏杀戮榜</div>
+                <a href=" " style="text-decoration:none;position:absolute;top:35px;left:calc((100% - 200px) /2);height:40px;width:200px;line-height:40px;font-size:14px;color:#DDD;">The Game Of Throne killing list</a >
+            </div>
+            <div>
+				<p style="position:absolute;bottom:10px;text-align:center;right:650px;">
+					<font style="color:white;background:black;">Valar Morghulis.Valar Dohaeris.</font> 凡人皆有一死，凡人皆需侍奉。
+                    </p>
+            </div>
+
+			<script src="http://cuc.yingshinet.com/d3.v3.min.js"></script>
+			<script src="../js/d3.layout.cloud.js"></script>
+        <script>
+            var fill=d3.scale.category20();
+            var words=[{text:'Aerys II Targaryen',size:2},
+												{text:'Alliser Thorne',size:1},
+												{text:'Amory Lorch',size:1},
+												{text:'Arya Stark',size:11},
+												{text:'Black Walder Rivers',size:1},
+												{text:'Bowen Marsh',size:1},
+												{text:'Brienne of Tarth',size:3},
+												{text:'Bronn',size:3},
+												{text:'Catelyn Stark',size:1},
+												{text:'Cersei Lannister',size:7},
+												{text:'Daario Naharis',size:6},
+												{text:'Daenerys Targaryen',size:13},
+												{text:'Doreah',size:1},
+												{text:'Drogon',size:3},
+												{text:'Eddard Stark',size:4},
+												{text:'Ellaria Sand',size:2},
+												{text:'Euron Greyjoy',size:3},
+												{text:'Gendry',size:2},
+												{text:'Ghost',size:1},
+												{text:'Gregor Clegane',size:7},
+												{text:'Grenn',size:1},
+												{text:'Grey Wind',size:1},
+												{text:'Grey Worm',size:2},
+												{text:'Hodor',size:1},
+												{text:'Howland Reed',size:1},
+												{text:'Ilyn Payne',size:1},
+												{text:'Jaime Lannister',size:5},
+												{text:'Janos Slynt',size:1},
+												{text:'Jaqen Hghar',size:3},
+												{text:'Joffrey Baratheon',size:1},
+												{text:'Jon Snow',size:13},
+												{text:'Jorah Mormont',size:3},
+												{text:'Karl Tanner',size:1},
+												{text:'Khal Drogo',size:2},
+												{text:'Lem Lemoncloak',size:1},
+												{text:'Lothar Frey',size:1},
+												{text:'Lysa Arryn',size:1},
+												{text:'Maester Cressen',size:1},
+												{text:'Mag the Mighty',size:3},
+												{text:'Meera Reed',size:2},
+												{text:'Melisandre',size:4},
+												{text:'Meryn Trant',size:1},
+												{text:'Mirri Maz Duur',size:1},
+												{text:'Mossador',size:1},
+												{text:'Obara Sand',size:2},
+												{text:'Olenna Tyrell',size:1},
+												{text:'Olly',size:2},
+												{text:'Osha',size:2},
+												{text:'Othell Yarwyck',size:1},
+												{text:'Petyr Baelish',size:3},
+												{text:'Podrick Payne',size:2},
+												{text:'Polliver',size:1},
+												{text:'Pyat Pree',size:2},
+												{text:'Ramsay Snow',size:9},
+												{text:'Rast',size:1},
+												{text:'Rhaegal',size:2},
+												{text:'Rickard Karstark',size:2},
+												{text:'Robb Stark',size:2},
+												{text:'Robert Baratheon',size:1},
+												{text:'Roose Bolton',size:1},
+												{text:'Samwell Tarly',size:2},
+												{text:'Sandor Clegane',size:14},
+												{text:'Selyse Baratheon',size:1},
+												{text:'Smalljon Umber',size:1},
+												{text:'Stannis Baratheon',size:2},
+												{text:'Styr',size:1},
+												{text:'Summer',size:1},
+												{text:'The Night King',size:3},
+												{text:'The Tickler',size:1},
+												{text:'The Waif',size:1},
+												{text:'Theon Greyjoy',size:5},
+												{text:'Tommen Baratheon',size:1},
+												{text:'Tormund Giantsbane',size:2},
+												{text:'Tyene Sand',size:2},
+												{text:'Tyrion Lannister',size:2},
+												{text:'Viserion',size:2},
+												{text:'White Walker',size:1},
+												{text:'Ygritte',size:4}];
+    var w=window.innerWidth
+|| document.documentElement.clientWidth
+|| document.body.clientWidth;
+
+    var h=window.innerHeight
+|| document.documentElement.clientHeight
+|| document.body.clientHeight;
+            var wc=d3.layout.cloud()
+				  .size([w*.9, h*.9])
+				  .words(words)
+				  .padding(5)
+				  .rotate(function() { return ~~(Math.random() * 2) * 90; })
+				  .font("underneath")
+				  .fontSize(function(d) { return d.size*8; })
+				  .on("end", draw)
+				  .start();
+
+		    function draw(words) {
+			d3.select("body").append("svg")
+				.attr("width", w*.9)
+                .attr("height", h*.9)
+                // .style("border","1px solid black")
+			    .append("g")
+				.attr("transform", "translate(650,350)")
+			    .selectAll("text")
+				.data(words)
+			    .enter().append("text")
+				.style("font-size", function(d) { return d.size + "px"; })
+				.style("font-family", "underneath")
+				.style("fill", function(d, i) { return "rgba(0,0,0,"+(d.size/(14*8) + .5) +")"; })
+				.attr("text-anchor", "middle")
+				.attr("transform", function(d) {
+				  return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+				})
+				.text(function(d) { return d.text; });
+		    }
+                
+        </script>
+    </body>
+</html>
